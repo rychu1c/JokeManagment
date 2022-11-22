@@ -15,7 +15,7 @@ namespace JokeManagment.Server
     {
         public CurrentUser MenuLogin() 
         {
-            CurrentUser currentUser1 = new CurrentUser();
+            CurrentUser currentUser = new CurrentUser();
             //Take user login and password
             Console.WriteLine("Podaj swój login.");
             string? inputLogin = Console.ReadLine();
@@ -27,9 +27,9 @@ namespace JokeManagment.Server
                 //Send it to DB
                 //if data match return object use
                 //var DBoutput = loginConnection.Query<CurrentUser>($"SELECT * FROM users WHERE login = '{inputLogin}' AND password = '{inputPassword}'").ToList();     SQL COMMAND
-                currentUser1 = loginConnection.QuerySingleOrDefault<CurrentUser>($"SELECT * FROM login('{inputLogin}', '{inputPassword}')");//Stored Procedure
+                currentUser = loginConnection.QuerySingleOrDefault<CurrentUser>($"SELECT * FROM login('{inputLogin}', '{inputPassword}')");//Stored Procedure
             }
-            return currentUser1;
+            return currentUser;
         }
 
     }
