@@ -21,7 +21,7 @@ namespace JokeManagment.Server
             string? inputLogin = Console.ReadLine();
             Console.WriteLine("Podaj swoje hasło");
             string? inputPassword = Console.ReadLine();
-            if (string.IsNullOrEmpty(inputLogin) || string.IsNullOrEmpty(inputPassword)) { return currentUser1; }
+            if (string.IsNullOrEmpty(inputLogin) || string.IsNullOrEmpty(inputPassword)) { return currentUser; }
             using (var loginConnection = ConnectionSQL.EstablishConnection())
             {
                 //Send it to DB
