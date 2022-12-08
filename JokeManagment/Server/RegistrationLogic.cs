@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using JokeManagment.Client;
 using static JokeManagment.Server.CurrentUser;
+using System.Xml.Linq;
+using Dapper;
 
 namespace JokeManagment.Server
 {
@@ -40,10 +42,44 @@ namespace JokeManagment.Server
             if (!isEnum) { return ; }
             Console.WriteLine(StatusConverted);
 
+            var lista = TakeCity();
+            foreach (var list in lista)
+            {
+                Console.WriteLine(list);
+            }
+            Console.WriteLine();
             Console.WriteLine("Wpisz z jakiego miasta się logujesz");
             string? inputLocation = Console.ReadLine();
             if (string.IsNullOrEmpty(inputLocation)) { return; }
-        } 
+            int Locationint;
+            bool isNumber = int.TryParse(inputLocation, out Locationint);
+            if (!isNumber) { return ; }
+
+            CurrentUser User = new CurrentUser(inputLogin,inputPassword,inputName, inputSurname, StatusConverted, Locationint);
+            SendFormula(User);
+        }
+
+        private void SendFormula(CurrentUser currentUser)
+        {
+            bool isRegistrationSuccess;
+            using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
+            { 
+
+            }
+        }
+        private IEnumerable<string> TakeCity()
+        {
+            string? input;
+            using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
+            {
+                var Cities = RegistrationConnection.Query<string>($"SELECT city FROM Location;");
+                //var inputsql = RegistrationConnection.QueryMultiple($"SELECT city FROM Location;");
+
+
+                return Cities;
+            }
+            
+        }
 
     }
 }
