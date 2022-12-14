@@ -20,8 +20,8 @@
 
         public enum LearningLevel
         {
-            Student,
-            Teacher
+            Student = 1,
+            Teacher = 2
         }
 
         public CurrentUser(string login, string password, string name, string surname, LearningLevel status, int location)

@@ -29,7 +29,7 @@ namespace JokeManagment.Server
             string? inputSurname = Console.ReadLine();
             if (string.IsNullOrEmpty(inputSurname) || !inputSurname.isStringLengthCorrect(40)) { return; }
 
-            Console.WriteLine("Wpisz 1 jeżeli jesteś nauczycielem ,2 jeżeli jesteś uczniem");
+            Console.WriteLine("Wpisz 1 jeżeli jesteś uczniem ,2 jeżeli jesteś nauczycielem");
             string? inputStatus = Console.ReadLine();
             LearningLevel StatusConverted;
             bool isEnum = Enum.TryParse<LearningLevel>(inputStatus, out StatusConverted);
