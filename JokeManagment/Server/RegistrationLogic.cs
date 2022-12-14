@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using JokeManagment.Client;
 using static JokeManagment.Server.CurrentUser;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace JokeManagment.Server
 {
@@ -14,19 +15,19 @@ namespace JokeManagment.Server
             //if its free write user to DB and return true
             Console.WriteLine("Podaj login nowego użytkownika");
             string? inputLogin = Console.ReadLine();
-            if (string.IsNullOrEmpty(inputLogin) || inputLogin.isStringLengthCorrect(40)) { return; }
+            if (string.IsNullOrEmpty(inputLogin) || !inputLogin.isStringLengthCorrect(40)) { return; }
 
             Console.WriteLine("Podaj hasło");
             string? inputPassword = Console.ReadLine();
-            if (string.IsNullOrEmpty(inputPassword) || inputPassword.isStringLengthCorrect(40)) { return; }
+            if (string.IsNullOrEmpty(inputPassword) || !inputPassword.isStringLengthCorrect(40)) { return; }
 
             Console.WriteLine("Podaj Imię");
             string? inputName = Console.ReadLine();
-            if (string.IsNullOrEmpty(inputName) || inputName.isStringLengthCorrect(40)) { return; }
+            if (string.IsNullOrEmpty(inputName) || !inputName.isStringLengthCorrect(40)) { return; }
 
             Console.WriteLine("Podaj Nazwisko");
             string? inputSurname = Console.ReadLine();
-            if (string.IsNullOrEmpty(inputSurname) || inputSurname.isStringLengthCorrect(40)) { return; }
+            if (string.IsNullOrEmpty(inputSurname) || !inputSurname.isStringLengthCorrect(40)) { return; }
 
             Console.WriteLine("Wpisz 1 jeżeli jesteś nauczycielem ,2 jeżeli jesteś uczniem");
             string? inputStatus = Console.ReadLine();
@@ -70,7 +71,21 @@ namespace JokeManagment.Server
             bool isRegistrationSuccess;
             using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
             {
-
+                try
+                {
+                    RegistrationConnection.Execute("INSERT INTO  VALUES(DEFAULT, @Login, @Password, @Name, @Surname, @LearningStatus, @LocationId, @LevelOfAccess)", currentUser);
+                }
+                catch
+                {
+                    Console.WriteLine("Nie udało się wysłać formularza. Spróbuj jeszcze raz");
+                    Console.ReadLine();
+                    Console.Clear();
+                    return;
+                }
+                Console.WriteLine("Rejestracja powiodła się!");
+                Console.ReadLine();
+                Console.Clear();
+                return;
             }
         }
         private bool isCityTakenFromDB()
