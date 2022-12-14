@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using JokeManagment.Client;
+﻿using Dapper;
 using static JokeManagment.Server.CurrentUser;
-using System.Xml.Linq;
-using Dapper;
 
 namespace JokeManagment.Server
 {
@@ -39,13 +31,14 @@ namespace JokeManagment.Server
             string? inputStatus = Console.ReadLine();
             LearningLevel StatusConverted;
             bool isEnum = Enum.TryParse<LearningLevel>(inputStatus, out StatusConverted);
-            if (!isEnum) { return ; }
+            if (!isEnum) { return; }
             Console.WriteLine(StatusConverted);
 
-            var lista = TakeCity();
-            foreach (var list in lista)
+            TakeCity();
+
+            foreach (var list in Location.All)
             {
-                Console.WriteLine(list);
+                Console.WriteLine($"{list.Location_id} to {list.City}");
             }
             Console.WriteLine();
             Console.WriteLine("Wpisz z jakiego miasta się logujesz");
@@ -53,9 +46,9 @@ namespace JokeManagment.Server
             if (string.IsNullOrEmpty(inputLocation)) { return; }
             int Locationint;
             bool isNumber = int.TryParse(inputLocation, out Locationint);
-            if (!isNumber) { return ; }
+            if (!isNumber) { return; }
 
-            CurrentUser User = new CurrentUser(inputLogin,inputPassword,inputName, inputSurname, StatusConverted, Locationint);
+            CurrentUser User = new CurrentUser(inputLogin, inputPassword, inputName, inputSurname, StatusConverted, Locationint);
             SendFormula(User);
         }
 
@@ -63,22 +56,17 @@ namespace JokeManagment.Server
         {
             bool isRegistrationSuccess;
             using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
-            { 
+            {
 
             }
         }
-        private IEnumerable<string> TakeCity()
+        private void TakeCity()
         {
-            string? input;
             using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
             {
-                var Cities = RegistrationConnection.Query<string>($"SELECT city FROM Location;");
+                Location.All = RegistrationConnection.Query<Location>($"SELECT * FROM location").ToList();
                 //var inputsql = RegistrationConnection.QueryMultiple($"SELECT city FROM Location;");
-
-
-                return Cities;
             }
-            
         }
 
     }
