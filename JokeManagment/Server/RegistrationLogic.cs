@@ -34,7 +34,11 @@ namespace JokeManagment.Server
             if (!isEnum) { return; }
             Console.WriteLine(StatusConverted);
 
-            TakeCity();
+            if (!isCityTakenFromDB())
+            {
+                Console.WriteLine("Błąd Połączenia");
+                return;
+            }
 
             foreach (var list in Location.All)
             {
@@ -60,14 +64,22 @@ namespace JokeManagment.Server
 
             }
         }
-        private void TakeCity()
+        private bool isCityTakenFromDB()
         {
             using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
             {
-                Location.All = RegistrationConnection.Query<Location>($"SELECT * FROM location").ToList();
-                //var inputsql = RegistrationConnection.QueryMultiple($"SELECT city FROM Location;");
+                try
+                {
+                    Location.All = RegistrationConnection.Query<Location>($"SELECT * FROM ").ToList();
+                    //var inputsql = RegistrationConnection.QueryMultiple($"SELECT city FROM Location;");
+                }
+                catch 
+                {
+                    Location.All.Clear();
+                    return false;
+                }
+                return true;
             }
         }
-
     }
 }
