@@ -34,5 +34,14 @@ namespace JokeManagment.Client
             }
             return input;
         }
+        //Check input if it's too long
+        public static bool isStringLengthCorrect(this string str,int numberOfCharLim)
+        {
+            if (str.Length > numberOfCharLim) 
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

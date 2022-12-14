@@ -1,9 +1,10 @@
 ﻿using Dapper;
+using JokeManagment.Client;
 using static JokeManagment.Server.CurrentUser;
 
 namespace JokeManagment.Server
 {
-    internal class RegistrationLogic
+    public class RegistrationLogic
     {
         public void MenuRegistration()
         {
@@ -13,19 +14,19 @@ namespace JokeManagment.Server
             //if its free write user to DB and return true
             Console.WriteLine("Podaj login nowego użytkownika");
             string? inputLogin = Console.ReadLine();
-            if (string.IsNullOrEmpty(inputLogin)) { return; }
+            if (string.IsNullOrEmpty(inputLogin) || inputLogin.isStringLengthCorrect(40)) { return; }
 
             Console.WriteLine("Podaj hasło");
             string? inputPassword = Console.ReadLine();
-            if (string.IsNullOrEmpty(inputPassword)) { return; }
+            if (string.IsNullOrEmpty(inputPassword) || inputPassword.isStringLengthCorrect(40)) { return; }
 
             Console.WriteLine("Podaj Imię");
             string? inputName = Console.ReadLine();
-            if (string.IsNullOrEmpty(inputName)) { return; }
+            if (string.IsNullOrEmpty(inputName) || inputName.isStringLengthCorrect(40)) { return; }
 
             Console.WriteLine("Podaj Nazwisko");
             string? inputSurname = Console.ReadLine();
-            if (string.IsNullOrEmpty(inputSurname)) { return; }
+            if (string.IsNullOrEmpty(inputSurname) || inputSurname.isStringLengthCorrect(40)) { return; }
 
             Console.WriteLine("Wpisz 1 jeżeli jesteś nauczycielem ,2 jeżeli jesteś uczniem");
             string? inputStatus = Console.ReadLine();
@@ -40,17 +41,25 @@ namespace JokeManagment.Server
                 return;
             }
 
+            Console.WriteLine("Wpisz z jakiego miasta się logujesz");
+            //Printout list of cities.
             foreach (var list in Location.All)
             {
                 Console.WriteLine($"{list.Location_id} to {list.City}");
             }
-            Console.WriteLine();
-            Console.WriteLine("Wpisz z jakiego miasta się logujesz");
+
             string? inputLocation = Console.ReadLine();
-            if (string.IsNullOrEmpty(inputLocation)) { return; }
             int Locationint;
             bool isNumber = int.TryParse(inputLocation, out Locationint);
-            if (!isNumber) { return; }
+            if (!isNumber) 
+            {
+                Console.WriteLine("Nieprawidłowy numer miasta");
+                return; 
+            }
+            if (!isListContainsInput(Locationint)) 
+            {
+                return; 
+            }
 
             CurrentUser User = new CurrentUser(inputLogin, inputPassword, inputName, inputSurname, StatusConverted, Locationint);
             SendFormula(User);
@@ -70,7 +79,7 @@ namespace JokeManagment.Server
             {
                 try
                 {
-                    Location.All = RegistrationConnection.Query<Location>($"SELECT * FROM ").ToList();
+                    Location.All = RegistrationConnection.Query<Location>($"SELECT * FROM location").ToList();
                     //var inputsql = RegistrationConnection.QueryMultiple($"SELECT city FROM Location;");
                 }
                 catch 
@@ -80,6 +89,20 @@ namespace JokeManagment.Server
                 }
                 return true;
             }
+        }
+        private bool isListContainsInput(int input) 
+        {
+            foreach (var list in Location.All)
+            {
+                if (list.Location_id.Equals(input))
+                {
+                    return true;
+                }
+            }
+            Console.WriteLine("Brak miasta w bazie! Spróbuj Ponownie");
+            Console.ReadLine();
+            Console.Clear();
+            return false;
         }
     }
 }
