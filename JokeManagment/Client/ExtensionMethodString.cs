@@ -8,20 +8,14 @@ namespace JokeManagment.Client
 {
     public static class ExtensionMethodString
     {
-        public static int CheckInput(this string str,int numberOfWays)
+        //Check if number is in range then return if is not return -1
+        public static int CheckIfNumberInRange(this string str,int range)
         {
-            if (str == null)
-            {
-                throw new Exception("Wartość niepoprawna");
-            }
             bool _isNumber = int.TryParse(str, out int result);
-            if (!_isNumber)
+            if (!_isNumber || range < result || result < 0)
             {
-                throw new Exception("Wartość niepoprawna");
-            }
-            if (numberOfWays < result)
-            {
-                throw new Exception("Wartość niepoprawna");
+                Console.WriteLine("Wartość niepoprawna");
+                return result = -1;
             }
             return result;
         }

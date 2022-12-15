@@ -27,7 +27,15 @@ namespace JokeManagment.Server
                 //Send it to DB
                 //if data match return object use
                 //var DBoutput = loginConnection.Query<CurrentUser>($"SELECT * FROM users WHERE login = '{inputLogin}' AND password = '{inputPassword}'").ToList();     SQL COMMAND
-                currentUser = loginConnection.QuerySingleOrDefault<CurrentUser>($"SELECT * FROM login('{inputLogin}', '{inputPassword}')");//Stored Procedure
+                try
+                {
+                    currentUser = loginConnection.QuerySingleOrDefault<CurrentUser>($"SELECT * FROM login('{inputLogin}', '{inputPassword}')");//Stored Procedure
+                }
+                catch
+                {
+                    Console.WriteLine("Błąd logowania,spróbuj ponownie.");
+                    return currentUser = null;
+                }
             }
             return currentUser;
         }

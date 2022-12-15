@@ -15,6 +15,7 @@ namespace JokeManagment.Client
         {
             Console.WriteLine("Witaj w aplikacji");
             LoginOrRegisterMenu();
+            MenuAfterLogin();
         }
         private void LoginOrRegisterMenu()
         {
@@ -23,7 +24,8 @@ namespace JokeManagment.Client
             {
                 Console.WriteLine("Wpisz 1 by się zalogowac, 2 jeżeli chcesz się zarejestrować, a 0 żeby wyjść z aplikacji");
                 string _input = Console.ReadLine();
-                int inputNumber = _input.CheckInput(2);//If user input number is valid ,convert input to string by method 
+                int inputNumber = _input.CheckIfNumberInRange(2);//If user input number is valid ,convert input to string by method 
+                if (inputNumber.Equals(-1)) return;
 
                 if (inputNumber == 1)
                 {
@@ -48,6 +50,25 @@ namespace JokeManagment.Client
                     reg.MenuRegistration();
                 }
             }
+        }
+        private void MenuAfterLogin()
+        {
+
+            while ()
+            {
+                Console.WriteLine("Wpisz numer menu do którego chcesz przejść");
+                Console.WriteLine("1.Żarty");
+                Console.WriteLine("2.Korepetycje");
+                Console.WriteLine("3.Biblioteka");
+                Console.WriteLine("4.Menu Administratora");
+                Console.WriteLine("5.Statystyka");
+                Console.WriteLine("0.Wyjdz z aplikacji");
+
+                string _input = Console.ReadLine();
+                int inputNumber = _input.CheckIfNumberInRange(6);
+                if (inputNumber.Equals(-1)) return;
+            }
+            
         }
     }
 }
