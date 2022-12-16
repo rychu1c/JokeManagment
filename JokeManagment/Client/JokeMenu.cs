@@ -44,7 +44,7 @@ namespace JokeManagment.Client
                 {
                     ReadRandomJoke();
                 }
-                else if (inputInt == 3 && ((int)currentUser.LevelOfAccess) == 0)//Option for Admin DO ZMIANY!!!!
+                else if (inputInt == 3 && ((int)currentUser.LevelOfAccess) == 1)//Option for Admin
                 {
                     AddJoke();
                 }
