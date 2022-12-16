@@ -12,7 +12,7 @@ namespace JokeManagment.Client
         public static int CheckIfNumberInRange(this string str,int range)
         {
             bool _isNumber = int.TryParse(str, out int result);
-            if (!_isNumber || range < result || result < 0)
+            if (!_isNumber || range < result || result <= 0)
             {
                 Console.WriteLine("Wartość niepoprawna");
                 return result = -1;
@@ -33,6 +33,7 @@ namespace JokeManagment.Client
         {
             if (str.Length > numberOfCharLim) 
             {
+                Console.WriteLine("Błąd, wpisano zbyt wiele znaków.");
                 return false;
             }
             return true;

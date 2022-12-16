@@ -68,12 +68,11 @@ namespace JokeManagment.Server
 
         private void SendFormula(CurrentUser currentUser)
         {
-            bool isRegistrationSuccess;
             using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
             {
                 try
                 {
-                    RegistrationConnection.Execute("INSERT INTO  VALUES(DEFAULT, @Login, @Password, @Name, @Surname, @LearningStatus, @LocationId, @LevelOfAccess)", currentUser);
+                    RegistrationConnection.Execute("INSERT INTO Users VALUES(DEFAULT, @Login, @Password, @Name, @Surname, @LearningStatus, @LocationId, @LevelOfAccess)", currentUser);
                 }
                 catch
                 {

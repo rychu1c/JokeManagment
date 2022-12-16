@@ -29,7 +29,7 @@ namespace JokeManagment.Server
                 //var DBoutput = loginConnection.Query<CurrentUser>($"SELECT * FROM users WHERE login = '{inputLogin}' AND password = '{inputPassword}'").ToList();     SQL COMMAND
                 try
                 {
-                    currentUser = loginConnection.QuerySingleOrDefault<CurrentUser>($"SELECT * FROM login('{inputLogin}', '{inputPassword}')");//Stored Procedure
+                    currentUser = loginConnection.QuerySingleOrDefault<CurrentUser>($"SELECT * FROM users WHERE login = '{inputLogin}' AND password = '{inputPassword}'");//Stored Procedure
                 }
                 catch
                 {
