@@ -212,9 +212,6 @@ namespace JokeManagment.Client
                 return;
             }
 
-
-
-
         }
 
         private List<T> GetJokeFormDB<T>(string SQLCommand)
