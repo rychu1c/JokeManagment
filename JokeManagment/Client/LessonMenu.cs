@@ -105,16 +105,29 @@ namespace JokeManagment.Client
                 return; 
             }
 
-            switch (inputUserInt)
+            SchoolSubjects pickedsubject = ListSubjects.FirstOrDefault<SchoolSubjects>(sub => sub.id_subject == inputUserInt);
+            if (pickedsubject == null)
             {
-                case 1:
-                    {
-
-                    }
-                default:
-                    break;
+                Console.WriteLine("Nie udało się pobrać wybranego przedmiotu. Powrót");
+                Console.ReadLine();
+                return;
             }
 
+            //string Sqlstringgetteacher = $"SELECT * FROM Teachers WHERE id_subject = {pickedsubject.id_subject};";
+            string Sqlstringavailableteachersubject = $"SELECT user_id, users.login, users.password, users.name, users.surname, users.learningstatus, users.location_id, users.levelofaccess FROM Users RIGHT JOIN (SELECT Foo.teacher_id FROM (SELECT teacher_id, COUNT(student_id) AS StudentCount FROM Teachers WHERE Teachers.id_subject = {pickedsubject.id_subject} GROUP BY teacher_id HAVING COUNT(student_id) <= 3 ORDER BY teacher_id) AS Foo) AS Faa ON user_id = Faa.teacher_id;";
+            List<CurrentUser> teachersList = GetListFromDB<CurrentUser>(Sqlstringavailableteachersubject);
+            if (teachersList == null)
+            {
+                Console.WriteLine("Bład pobrania listy uczniów. Powrót");
+                Console.ReadLine();
+                return;
+            }
+
+            Console.WriteLine($"Wybierz nauczyciela z którym chcesz uczyć się przdmiotu {pickedsubject.id_subject}:");
+            foreach (CurrentUser teacher in teachersList)
+            {
+                Console.WriteLine($"{teacher.Name}");
+            }
             //select form available teachers
             //sign to specific teacher for learning
 
