@@ -131,7 +131,7 @@ namespace JokeManagment.Client
 
             string userInput = Console.ReadLine();
             bool isValid3 = int.TryParse(userInput, out int userInputInt);
-            if (!isValid3 || userInputInt > teachersList.Count || userInputInt < 0)
+            if (!isValid3 || userInputInt > teachersList.Count || userInputInt <= 0)
             {
                 Console.WriteLine("Nie wybrano nauczyciela");
                 return;
@@ -161,15 +161,51 @@ namespace JokeManagment.Client
 
         private void CheckYourAssigment()
         {
-            string Sqlstringcheckyourlesson = $"SELECT name, surname, SchoolSubjects.subject_name FROM Users JOIN Teachers ON Teachers.teacher_id = users.user_id JOIN SchoolSubjects ON SchoolSubjects.id_subject = Teachers.id_subject WHERE Teachers.student_id = {currentUser.Id};";
+            string Sqlstringcheckyourlesson = $"SELECT user_id, name, surname, SchoolSubjects.subject_name, SchoolSubjects.id_subject FROM Users JOIN Teachers ON Teachers.teacher_id = users.user_id JOIN SchoolSubjects ON SchoolSubjects.id_subject = Teachers.id_subject WHERE Teachers.student_id = {currentUser.Id};";
             
             List<StudentTeachers> StudentTeachers = new List<StudentTeachers>();
             StudentTeachers = GetListFromDB<StudentTeachers>(Sqlstringcheckyourlesson);
+            if (StudentTeachers == null)
+            {
+                return;
+            }
 
             foreach (StudentTeachers teacher in StudentTeachers)
             {
                 Console.WriteLine($"{teacher.name} {teacher.surname} uczy cię przedmiotu {teacher.subject_name}");
             }
+        }
+
+        private void SignOutLesson()
+        {
+            string Sqlstringgetyourlesson = $"SELECT user_id, name, surname, SchoolSubjects.subject_name, SchoolSubjects.id_subject FROM Users JOIN Teachers ON Teachers.teacher_id = users.user_id JOIN SchoolSubjects ON SchoolSubjects.id_subject = Teachers.id_subject WHERE Teachers.student_id = {currentUser.Id};";
+
+            List<StudentTeachers> TeachersOfStudent = GetListFromDB<StudentTeachers>(Sqlstringgetyourlesson);
+            if (TeachersOfStudent == null) 
+            {
+                return;
+            }
+
+            Console.WriteLine("Wybierz które zajęcia chcesz usunąć");
+            Console.WriteLine("0. Anuluj kasowanie");
+            foreach (StudentTeachers Teacher in TeachersOfStudent)
+            {
+                Console.WriteLine($"{TeachersOfStudent.IndexOf(Teacher)+1}. Korepetytor to {Teacher.name} {Teacher.surname}, uczy cię {Teacher.subject_name}");
+            }
+
+            string userInput = Console.ReadLine();
+            bool isValid = int.TryParse(userInput, out int userInputInt);
+            if (!isValid || userInputInt > TeachersOfStudent.Count || userInputInt < 0)
+            {
+                Console.WriteLine("Błędna wartość");
+                Console.ReadLine();
+                Console.Clear();
+            }
+            StudentTeachers PickedStudent = TeachersOfStudent.ElementAt(userInputInt-1);
+
+            string Sqlstringdelitelesson = $"UPDATE Teachers SET student_id = NULL WHERE teacher_id = {PickedStudent.user_id} AND student_id = {currentUser.Id} AND id_subject = {PickedStudent.id_subject};";
+            
+            
         }
 
         private List<T> GetListFromDB<T>(string SQLCommand)
