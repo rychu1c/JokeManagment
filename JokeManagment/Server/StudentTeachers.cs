@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace JokeManagment.Server
 {
-    public class AvailableTeachers
+    public class StudentTeachers
     {
-        public int Teacher_id { get; set; }
-        public int StudentsCount { get; set; }
+        public string name { get; set; }
+        public string surname { get; set; }
+        public string subject_name { get; set; }
     }
 }

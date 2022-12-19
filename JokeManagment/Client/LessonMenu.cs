@@ -19,11 +19,11 @@ namespace JokeManagment.Client
 
         public void Menu()
         {
-            if (((int)currentUser.LearningStatus) == 2)
+            if (((int)currentUser.LearningStatus) == 1)
             {
                 StudentMenu();
             }
-            else if(((int)currentUser.LearningStatus) == 1)
+            else if(((int)currentUser.LearningStatus) == 2)
             {
                 TeacherMenu();
             }
@@ -60,7 +60,7 @@ namespace JokeManagment.Client
                         SignForLesson();
                         break;
                     case 2:
-                        
+                        CheckYourAssigment();
                         break;
                     case 3:
                         
@@ -156,6 +156,19 @@ namespace JokeManagment.Client
                 Console.ReadLine();
                 Console.Clear();
                 return;
+            }
+        }
+
+        private void CheckYourAssigment()
+        {
+            string Sqlstringcheckyourlesson = $"SELECT name, surname, SchoolSubjects.subject_name FROM Users JOIN Teachers ON Teachers.teacher_id = users.user_id JOIN SchoolSubjects ON SchoolSubjects.id_subject = Teachers.id_subject WHERE Teachers.student_id = {currentUser.Id};";
+            
+            List<StudentTeachers> StudentTeachers = new List<StudentTeachers>();
+            StudentTeachers = GetListFromDB<StudentTeachers>(Sqlstringcheckyourlesson);
+
+            foreach (StudentTeachers teacher in StudentTeachers)
+            {
+                Console.WriteLine($"{teacher.name} {teacher.surname} uczy cię przedmiotu {teacher.subject_name}");
             }
         }
 
