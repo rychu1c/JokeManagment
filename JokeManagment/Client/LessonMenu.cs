@@ -19,14 +19,7 @@ namespace JokeManagment.Client
 
         public void Menu()
         {
-            if (((int)currentUser.LearningStatus) == 1)
-            {
-                StudentMenu();
-            }
-            else if(((int)currentUser.LearningStatus) == 2)
-            {
-                TeacherMenu();
-            }
+            StudentMenu();
         }
 
         private void StudentMenu()
@@ -39,6 +32,12 @@ namespace JokeManagment.Client
                 messages.Add("1.Zapisz się na lekcje");
                 messages.Add("2.Sprawdz gdzie jesteś zapisany");
                 messages.Add("3.Wypisz się z zajęć");
+
+                if(((int)currentUser.LearningStatus) == 2)
+                {
+                    messages.Add("4.Dodaj nowy przedmiot który uczysz");
+                    messages.Add("5.Usuń swoje zajecia");
+                }
 
                 foreach (string m in messages)
                 {
@@ -63,23 +62,28 @@ namespace JokeManagment.Client
                         CheckYourAssigment();
                         break;
                     case 3:
-                        
+                        SignOutLesson();
+                        break;
+                    case 4:
+                        if (((int)currentUser.LearningStatus) == 2)
+                        {
+                            AddYourSubject();
+                            break;
+                        }
+                        Console.WriteLine("Brak dostepu");
+                        break;
+                    case 5:
+                        if (((int)currentUser.LearningStatus) == 2)
+                        {
+                            DeliteYourLesson();
+                            break;
+                        }
+                        Console.WriteLine("Brak dostepu");
                         break;
                     default:
                         return;
                 }
             }
-        }
-
-        private void TeacherMenu()
-        {
-
-            Console.WriteLine("1.Zapisz się na lekcje");
-            Console.WriteLine("2.Sprawdz gdzie jesteś zapisany");
-            Console.WriteLine("3.Wypisz się z zajęć");
-            Console.WriteLine("4.Dodaj nowy przedmiot który uczysz");
-            Console.WriteLine("5.Usuń swoje zajecia");
-            Console.WriteLine("0.Wróć");
         }
 
         private void SignForLesson()
@@ -223,6 +227,16 @@ namespace JokeManagment.Client
                 Console.Clear();
                 return;
             }
+        }
+
+        private void AddYourSubject()
+        {
+
+        }
+
+        private void DeliteYourLesson()
+        {
+
         }
 
         private List<T> GetListFromDB<T>(string SQLCommand)
