@@ -19,11 +19,11 @@ namespace JokeManagment.Client
 
         public void Menu()
         {
-            if (((int)currentUser.LearningStatus) == 1)
+            if (((int)currentUser.LearningStatus) == 2)
             {
                 StudentMenu();
             }
-            else if(((int)currentUser.LearningStatus) == 2)
+            else if(((int)currentUser.LearningStatus) == 1)
             {
                 TeacherMenu();
             }
@@ -49,7 +49,7 @@ namespace JokeManagment.Client
                 bool isValid = int.TryParse(inputUser, out int inputUserInt);
                 if (!isValid) { continue; }
 
-                if (messages.Count+1 < inputUserInt || 0 < inputUserInt)
+                if (messages.Count+1 < inputUserInt || 0 > inputUserInt)
                 {
                     Console.WriteLine("Błędna wpisana wartość");
                     continue;
@@ -114,7 +114,7 @@ namespace JokeManagment.Client
             }
 
             //string Sqlstringgetteacher = $"SELECT * FROM Teachers WHERE id_subject = {pickedsubject.id_subject};";
-            string Sqlstringavailableteachersubject = $"SELECT user_id, users.login, users.password, users.name, users.surname, users.learningstatus, users.location_id, users.levelofaccess FROM Users RIGHT JOIN (SELECT Foo.teacher_id FROM (SELECT teacher_id, COUNT(student_id) AS StudentCount FROM Teachers WHERE Teachers.id_subject = {pickedsubject.id_subject} GROUP BY teacher_id HAVING COUNT(student_id) <= 3 ORDER BY teacher_id) AS Foo) AS Faa ON user_id = Faa.teacher_id;";
+            string Sqlstringavailableteachersubject = $"SELECT user_id, users.login, users.password, users.name, users.surname, users.learningstatus, users.location_id, users.levelofaccess FROM Users RIGHT JOIN (SELECT Foo.teacher_id FROM (SELECT teacher_id, COUNT(student_id) AS StudentCount FROM Teachers WHERE Teachers.id_subject = {pickedsubject.id_subject} GROUP BY teacher_id HAVING COUNT(student_id) < 3 ORDER BY teacher_id) AS Foo) AS Faa ON user_id = Faa.teacher_id;";
             List<CurrentUser> teachersList = GetListFromDB<CurrentUser>(Sqlstringavailableteachersubject);
             if (teachersList == null)
             {
@@ -126,11 +126,37 @@ namespace JokeManagment.Client
             Console.WriteLine($"Wybierz nauczyciela z którym chcesz uczyć się przdmiotu {pickedsubject.id_subject}:");
             foreach (CurrentUser teacher in teachersList)
             {
-                Console.WriteLine($"{teacher.Name}");
+                Console.WriteLine($"{teachersList.IndexOf(teacher)+1}.{teacher.Name} {teacher.Surname}");
             }
-            //select form available teachers
-            //sign to specific teacher for learning
 
+            string userInput = Console.ReadLine();
+            bool isValid3 = int.TryParse(userInput, out int userInputInt);
+            if (!isValid3 || userInputInt > teachersList.Count || userInputInt < 0)
+            {
+                Console.WriteLine("Nie wybrano nauczyciela");
+                return;
+            }
+            CurrentUser PickedTeacher = teachersList.ElementAt(userInputInt-1);
+            Console.WriteLine($" picked teacher is {PickedTeacher.Name} {PickedTeacher.Surname}");
+            string Sqlstringinsertstudent = $"INSERT INTO TEACHER VALUES ({PickedTeacher.Id}, {currentUser.Id}, {pickedsubject.id_subject});";
+            using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
+            {
+                try
+                {
+                    RegistrationConnection.Execute($"{Sqlstringinsertstudent}");
+                }
+                catch
+                {
+                    Console.WriteLine("Nie udało się zapisać. Spróbuj ponownie");
+                    Console.ReadLine();
+                    Console.Clear();
+                    return;
+                }
+                Console.WriteLine("Zapis powiodł się!");
+                Console.ReadLine();
+                Console.Clear();
+                return;
+            }
         }
 
         private List<T> GetListFromDB<T>(string SQLCommand)
