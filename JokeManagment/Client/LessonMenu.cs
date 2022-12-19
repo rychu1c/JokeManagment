@@ -152,7 +152,7 @@ namespace JokeManagment.Client
                     Console.Clear();
                     return;
                 }
-                Console.WriteLine("Zapis powiodł się!");
+                Console.WriteLine("Zapis powiodło się!");
                 Console.ReadLine();
                 Console.Clear();
                 return;
@@ -204,8 +204,25 @@ namespace JokeManagment.Client
             StudentTeachers PickedStudent = TeachersOfStudent.ElementAt(userInputInt-1);
 
             string Sqlstringdelitelesson = $"UPDATE Teachers SET student_id = NULL WHERE teacher_id = {PickedStudent.user_id} AND student_id = {currentUser.Id} AND id_subject = {PickedStudent.id_subject};";
-            
-            
+
+            using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
+            {
+                try
+                {
+                    RegistrationConnection.Execute($"{Sqlstringdelitelesson}");
+                }
+                catch
+                {
+                    Console.WriteLine("Nie udało się usunąć.");
+                    Console.ReadLine();
+                    Console.Clear();
+                    return;
+                }
+                Console.WriteLine("Usunięcie powiodło się!");
+                Console.ReadLine();
+                Console.Clear();
+                return;
+            }
         }
 
         private List<T> GetListFromDB<T>(string SQLCommand)
