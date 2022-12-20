@@ -72,14 +72,6 @@ namespace JokeManagment.Client
                         }
                         Console.WriteLine("Brak dostepu");
                         break;
-                    case 5:
-                        if (((int)currentUser.LearningStatus) == 2)
-                        {
-                            DeliteYourLesson();
-                            break;
-                        }
-                        Console.WriteLine("Brak dostepu");
-                        break;
                     default:
                         return;
                 }
@@ -231,14 +223,49 @@ namespace JokeManagment.Client
 
         private void AddYourSubject()
         {
+            string Sqlstringgetsubjects = "SELECT * FROM SchoolSubjects";
+            List<SchoolSubjects> schoolSubjects = GetListFromDB<SchoolSubjects>(Sqlstringgetsubjects);
+            if (schoolSubjects == null)
+            {
+                return;
+            }
 
+            Console.WriteLine("Których przedmiot chcesz uczyć?");
+            foreach (SchoolSubjects subject in schoolSubjects)
+            {
+                Console.WriteLine($"{schoolSubjects.IndexOf(subject)+1}. {subject.subject_name}");
+            }
+
+            string userInput = Console.ReadLine();
+            bool isVaild = int.TryParse(userInput, out int userInputInt);
+            if (!isVaild || userInputInt > schoolSubjects.Count() || userInputInt <= 0)
+            {
+                Console.WriteLine("Wpisana wartość jest nie poprawna");
+                return;
+            }
+
+            SchoolSubjects subjects = schoolSubjects.ElementAt(userInputInt - 1);
+            string Sqlstringaddsubject = $"INSERT INTO Teachers VALUES({currentUser.Id}, NULL, {subjects.id_subject})";
+
+            using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
+            {
+                try
+                {
+                    RegistrationConnection.Execute($"{Sqlstringaddsubject}");
+                }
+                catch
+                {
+                    Console.WriteLine("Dodanie przedmiotu nie powioło się .");
+                    Console.ReadLine();
+                    Console.Clear();
+                    return;
+                }
+                Console.WriteLine("Dodanie przedmiotu powiodło się!");
+                Console.ReadLine();
+                Console.Clear();
+                return;
+            }
         }
-
-        private void DeliteYourLesson()
-        {
-
-        }
-
         private List<T> GetListFromDB<T>(string SQLCommand)
         {
             var list = new List<T>();
