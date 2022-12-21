@@ -34,16 +34,17 @@ namespace JokeManagment.Client
                     LoginLogic log = new LoginLogic();
 
                     _currentUser = log.MenuLogin();
-                    if (_currentUser != null)
+                    if (_currentUser == null)
                     {
-                        Console.WriteLine("current user not null");
-                        IsCurrentUserNull = false;
+                        Console.WriteLine("Błąd Logowania ,spróbuj ponownie");
                     }
                     else 
                     {
-                        Console.WriteLine("current user null");
+                        Console.WriteLine($"Zalogowałeś się {_currentUser.Login}");
                         IsCurrentUserNull= false;
                     }
+                    Console.ReadLine();
+                    Console.Clear();
                 }
                 if (inputNumber == 2)
                 {

@@ -118,6 +118,7 @@ namespace JokeManagment.Client
                 return;
             }
             Console.WriteLine(JokeChosen.Joke_message);
+            CountJoke();
         }
 
         private void ReadRandomJoke()
@@ -153,6 +154,7 @@ namespace JokeManagment.Client
                 }
             }
             Console.WriteLine(jokemessage);
+            CountJoke();
         }
 
         private void AddJoke() 
@@ -234,7 +236,7 @@ namespace JokeManagment.Client
 
         private void CountJoke()
         {
-            string SqlstringCountJoke = $"UPDATE JokeLocationStatistic SET readjokecount = readjokecount + 1 WHERE location_id = 1";
+            string SqlstringCountJoke = $"UPDATE JokeLocationStatistic SET readjokecount = readjokecount + 1 WHERE location_id = {currentUser.LocationId}";
             using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
             {
                 try
