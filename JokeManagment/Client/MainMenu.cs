@@ -23,59 +23,77 @@ namespace JokeManagment.Client
             bool IsCurrentUserNull = true;
             while (IsCurrentUserNull)
             {
-                Console.WriteLine("Wpisz 1 by się zalogowac, 2 jeżeli chcesz się zarejestrować, a 0 żeby wyjść z aplikacji");
-                string _input = Console.ReadLine();
-                int inputNumber = _input.CheckIfNumberInRange(2);//If user input number is valid ,convert input to string by method 
-                if (inputNumber.Equals(-1)) return;
+                List<string> ListOptions= new List<string>();
+                ListOptions.Add("1.Zaloguj się");
+                ListOptions.Add("2.Zarejestruj się");
+                ListOptions.Add("0.Wyjdz z aplikacji");
 
-                if (inputNumber == 1)
+                bool isVaildInput = int.TryParse(Console.ReadLine(),out int inputNumber);
+                if (!isVaildInput) 
                 {
-                    Console.WriteLine("wpisałeś 1");
-                    LoginLogic log = new LoginLogic();
+                    Console.WriteLine("Błędnie wpisana wartość");
+                    continue;
+                }
 
-                    _currentUser = log.MenuLogin();
-                    if (_currentUser == null)
-                    {
-                        Console.WriteLine("Błąd Logowania ,spróbuj ponownie");
-                    }
-                    else 
-                    {
-                        Console.WriteLine($"Zalogowałeś się {_currentUser.Login}");
-                        IsCurrentUserNull= false;
-                    }
+                switch (inputNumber)
+                {
+                    case 1:
+                        LoginLogic log = new LoginLogic();
+                        _currentUser = log.MenuLogin();
+                        break;
+                    case 2:
+                        RegistrationLogic reg = new RegistrationLogic();
+                        reg.MenuRegistration();
+                        break;
+                    case 0:
+                        Console.WriteLine("Wyjdz z aplikcaji");
+                        IsCurrentUserNull = false;
+                        return;
+                    default:
+                        Console.WriteLine("Wpisana wartość niepoprawna");
+                        Console.ReadLine();
+                        Console.Clear();
+                        break;
+                }
+                if (_currentUser != null) 
+                {
+                    IsCurrentUserNull = false;
                     Console.ReadLine();
                     Console.Clear();
-                }
-                if (inputNumber == 2)
-                {
-                    Console.WriteLine("wpisałeś 2");
-                    RegistrationLogic reg = new RegistrationLogic();
-                    reg.MenuRegistration();
                 }
             }
         }
 
         private void MenuAfterLogin()
         {
+            
             bool IsUserLogin = true;
             while (IsUserLogin)
             {
+                
+
+                List<string> Liststrings= new List<string>();
+                Liststrings.Add("1.Żarty");
+                Liststrings.Add("2.Korepetycje");
+                Liststrings.Add("3.Biblioteka");
+                Liststrings.Add("4.Menu Administratora");
+                Liststrings.Add("5.Statystyka");
+                Liststrings.Add("0.Wyloguj z aplikacji");
+
                 Console.WriteLine("Wpisz numer menu do którego chcesz przejść");
-                Console.WriteLine("1.Żarty");
-                Console.WriteLine("2.Korepetycje");
-                Console.WriteLine("3.Biblioteka");
-                Console.WriteLine("4.Menu Administratora");
-                Console.WriteLine("5.Statystyka");
-                Console.WriteLine("0.Wyloguj z aplikacji");
+                PrintOutList(Liststrings);
 
-                string _input = Console.ReadLine();
-                int inputNumber = _input.CheckIfNumberInRange(5);
-
-                switch (inputNumber)
+                bool isValid = int.TryParse(Console.ReadLine(), out int userInputInt);
+                if (!isValid || Liststrings.Count < userInputInt || 0 > userInputInt)
                 {
-                    case -1:
-                        Console.WriteLine("Wybrano zły numer!");
-                        continue;
+                    Console.WriteLine("Wprowadzono nie poprawną wartość, spróbuj ponownie");
+                    Console.ReadLine();
+                    Console.Clear();
+                    continue;
+                }
+
+                switch (userInputInt)
+                {
                     case 1:
                         new JokeMenu(_currentUser).Menu();
                         continue;
@@ -92,12 +110,21 @@ namespace JokeManagment.Client
                         new StatisticMenu(_currentUser).Menu();
                         continue;
                     default:
+                        Console.WriteLine("Wyjscie z aplikacji");
                         IsUserLogin = false;
                         _currentUser = null;
-                        break;
+                        return;
                 }
             }
             LoginOrRegisterMenu();
+        }
+
+        private void PrintOutList(List<string> Liststring)
+        {
+            foreach (string str in Liststring)
+            {
+                Console.WriteLine(str);
+            }
         }
     }
 }
