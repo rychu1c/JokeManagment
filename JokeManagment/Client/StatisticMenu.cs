@@ -18,7 +18,12 @@ namespace JokeManagment.Client
 
         public void Menu()
         {
+            CheckStatisticForCities();
+        }
 
+        private void CheckStatisticForCities()
+        {
+            string sqlStringCheckCityStatistics = $"";
         }
     }
 }
