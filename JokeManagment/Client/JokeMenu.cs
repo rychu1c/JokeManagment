@@ -231,5 +231,29 @@ namespace JokeManagment.Client
             }
             return list;
         }
+
+        private void CountJoke()
+        {
+            string SqlstringCountJoke = $"UPDATE JokeLocationStatistic SET readjokecount = readjokecount + 1 WHERE location_id = 1";
+            using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
+            {
+                try
+                {
+                    RegistrationConnection.Execute($"{SqlstringCountJoke}");
+                }
+                catch
+                {
+                    Console.WriteLine("Błąd naliczenia do statystyk");
+                    Console.ReadLine();
+                    Console.Clear();
+                    return;
+                }
+                Console.ReadLine();
+                Console.Clear();
+                return;
+            }
+
+        }
+
     }
 }
