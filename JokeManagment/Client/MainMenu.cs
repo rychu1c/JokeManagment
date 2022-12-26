@@ -28,10 +28,14 @@ namespace JokeManagment.Client
                 ListOptions.Add("2.Zarejestruj się");
                 ListOptions.Add("0.Wyjdz z aplikacji");
 
+                PrintOutList(ListOptions);
+
                 bool isVaildInput = int.TryParse(Console.ReadLine(),out int inputNumber);
                 if (!isVaildInput) 
                 {
                     Console.WriteLine("Błędnie wpisana wartość");
+                    Console.ReadLine();
+                    Console.Clear();
                     continue;
                 }
 
@@ -48,18 +52,18 @@ namespace JokeManagment.Client
                     case 0:
                         Console.WriteLine("Wyjdz z aplikcaji");
                         IsCurrentUserNull = false;
-                        return;
+                        Console.ReadLine();
+                        continue;
                     default:
                         Console.WriteLine("Wpisana wartość niepoprawna");
                         Console.ReadLine();
-                        Console.Clear();
                         break;
                 }
+                Console.Clear();
+
                 if (_currentUser != null) 
                 {
                     IsCurrentUserNull = false;
-                    Console.ReadLine();
-                    Console.Clear();
                 }
             }
         }
@@ -70,8 +74,6 @@ namespace JokeManagment.Client
             bool IsUserLogin = true;
             while (IsUserLogin)
             {
-                
-
                 List<string> Liststrings= new List<string>();
                 Liststrings.Add("1.Żarty");
                 Liststrings.Add("2.Korepetycje");

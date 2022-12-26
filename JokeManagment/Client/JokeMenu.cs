@@ -24,47 +24,63 @@ namespace JokeManagment.Client
             bool isUserQuittedMenu = false;
             while (!isUserQuittedMenu)
             {
-                Console.WriteLine("1.Przeczytaj żart");
-                Console.WriteLine("2.Losuj żart do przeczytania");
-                Console.WriteLine("3.Dodaj nowy żart");
-                Console.WriteLine("0.Wróć");
+                List<string> ListString= new List<string>();
+                ListString.Add("1.Przeczytaj żart");
+                ListString.Add("2.Losuj żart do przeczytania");
+                ListString.Add("3.Dodaj nowy żart");
+                ListString.Add("0.Wróć");
 
-                string input = Console.ReadLine();
-                int inputInt = input.CheckIfNumberInRange(3);
-                if (inputInt == -1 || inputInt == 0)
+                Console.WriteLine("Wybierz z dostępnych opcji.");
+                foreach (string strOption in ListString)
                 {
-                    Console.WriteLine("Błąd wpisanej wartości");
-                    return;
+                    Console.WriteLine("strOption");
                 }
-                else if (inputInt == 1)
+
+                bool isValid = int.TryParse(Console.ReadLine(), out int inputUserInt);
+                if (!isValid || ListString.Count < inputUserInt || 0 > inputUserInt)
                 {
-                    ReadJoke();
+                    Console.WriteLine("Wpisano niepoprawną wartość");
+                    Console.ReadLine();
+                    Console.Clear();
+                    isUserQuittedMenu = true;
+                    continue;
                 }
-                else if (inputInt == 2)
+
+                switch (inputUserInt)
                 {
-                    ReadRandomJoke();
+                    case 0:
+                        isUserQuittedMenu = true;
+                        break;
+                    case 1:
+                        ReadJoke();
+                        break;
+                    case 2:
+                        ReadRandomJoke();
+                        break;
+                    case 3:
+                        if (((int)currentUser.LevelOfAccess) != 1)
+                        {
+                            Console.WriteLine("Nie wystarczające uprwanienie dla wybranej czynnosci");
+                            break;
+                        }
+                        AddJoke();
+                        break;
                 }
-                else if (inputInt == 3 && ((int)currentUser.LevelOfAccess) == 1)//Option for Admin
-                {
-                    AddJoke();
-                }
-                else
-                {
-                    Console.WriteLine("Nie wystarczające uprawnienia dla tej opcji");
-                }
+                Console.Clear();
             }
             
         }
         private void ReadJoke()
         {
+            //Get list of joke type
             string Sqlstringgettype = $"SELECT * FROM JokeType";
             List<JokeType> jokeTypes = new List<JokeType>();
             jokeTypes = GetJokeFormDB<JokeType>(Sqlstringgettype);
-
             if (jokeTypes == null)
             {
                 return;
             }
+
             Console.WriteLine("Wpisz jaką kategorie żartu chcesz przeczytać");
             foreach (JokeType joke in jokeTypes) 
             {
@@ -78,7 +94,8 @@ namespace JokeManagment.Client
                 Console.ReadKey();
                 return;
             }
-
+            
+            //Based on user choice pick specific type of joke 
             JokeType jokeTypeChosen = jokeTypes.FirstOrDefault(type => type.category_joke_id == inputId);
             if (jokeTypeChosen == null)
             {
@@ -87,6 +104,7 @@ namespace JokeManagment.Client
                 return;
             }
 
+            //Get list of jokes with specific type
             string Sqlstringgetjoke = $"SELECT * FROM JokeBase WHERE category_joke_id = {jokeTypeChosen.category_joke_id};";
             List<JokeBase> JokeList = new List<JokeBase>();
             JokeList = GetJokeFormDB<JokeBase>(Sqlstringgetjoke);
@@ -139,12 +157,9 @@ namespace JokeManagment.Client
             string jokemessage;
             using (var JokeConnection = ConnectionSQL.EstablishConnection())
             {
-                //Send it to DB
-                //if data match return object use
-                //var DBoutput = loginConnection.Query<CurrentUser>($"SELECT * FROM users WHERE login = '{inputLogin}' AND password = '{inputPassword}'").ToList();     SQL COMMAND
                 try
                 {
-                    jokemessage = JokeConnection.QuerySingleOrDefault<string>($"SELECT joke_message FROM JokeBase WHERE joke_id = {idOfRandomJoke}");//Stored Procedure
+                    jokemessage = JokeConnection.QuerySingleOrDefault<string>($"SELECT joke_message FROM JokeBase WHERE joke_id = {idOfRandomJoke}");
                 }
                 catch
                 {

@@ -36,18 +36,13 @@ namespace JokeManagment.Server
             if (!isEnum) { return; }
             Console.WriteLine(StatusConverted);
 
-            if (!isCityTakenFromDB())
+            if (!isCityTakenFromDB() || Location.All.Count == 0)
             {
-                Console.WriteLine("Błąd Połączenia");
+                Console.WriteLine("Błąd Połączenia lub lista miast pusta");
                 return;
             }
 
-            Console.WriteLine("Wpisz z jakiego miasta się logujesz");
-            //Printout list of cities.
-            foreach (var list in Location.All)
-            {
-                Console.WriteLine($"{list.Location_id} to {list.City}");
-            }
+            PrintOutCities();
 
             string? inputLocation = Console.ReadLine();
             int Locationint;
@@ -66,6 +61,14 @@ namespace JokeManagment.Server
             SendFormula(User);
         }
 
+        private void PrintOutCities()
+        {
+            Console.WriteLine("Wpisz z jakiego miasta się logujesz");
+            foreach (var list in Location.All)
+            {
+                Console.WriteLine($"{list.Location_id} to {list.City}");
+            }
+        }
         private void SendFormula(CurrentUser currentUser)
         {
             using (var RegistrationConnection = ConnectionSQL.EstablishConnection())

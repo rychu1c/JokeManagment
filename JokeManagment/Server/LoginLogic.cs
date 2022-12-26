@@ -13,31 +13,35 @@ namespace JokeManagment.Server
 {
     public class LoginLogic
     {
-        public CurrentUser MenuLogin() 
+        public CurrentUser MenuLogin()
         {
             CurrentUser currentUser = new CurrentUser();
+
             //Take user login and password
             Console.WriteLine("Podaj swój login.");
             string? inputLogin = Console.ReadLine();
             Console.WriteLine("Podaj swoje hasło");
             string? inputPassword = Console.ReadLine();
+
             if (string.IsNullOrEmpty(inputLogin) || string.IsNullOrEmpty(inputPassword)) { return currentUser; }
+
+            return currentUser = GetUserDB(currentUser, inputLogin, inputPassword);
+        }
+        private CurrentUser GetUserDB(CurrentUser user,string Login,string password)
+        {
             using (var loginConnection = ConnectionSQL.EstablishConnection())
             {
-                //Send it to DB
-                //if data match return object use
-                //var DBoutput = loginConnection.Query<CurrentUser>($"SELECT * FROM users WHERE login = '{inputLogin}' AND password = '{inputPassword}'").ToList();     SQL COMMAND
                 try
                 {
-                    currentUser = loginConnection.QuerySingleOrDefault<CurrentUser>($"SELECT * FROM users WHERE login = '{inputLogin}' AND password = '{inputPassword}'");//Stored Procedure
+                    user = loginConnection.QuerySingleOrDefault<CurrentUser>($"SELECT * FROM users WHERE login = '{Login}' AND password = '{password}'");//Stored Procedure
                 }
                 catch
                 {
                     Console.WriteLine("Błąd logowania,spróbuj ponownie.");
-                    return currentUser = null;
+                    return user = null;
                 }
             }
-            return currentUser;
+            return user;
         }
 
     }
