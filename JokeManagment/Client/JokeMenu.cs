@@ -33,7 +33,7 @@ namespace JokeManagment.Client
                 Console.WriteLine("Wybierz z dostępnych opcji.");
                 foreach (string strOption in ListString)
                 {
-                    Console.WriteLine("strOption");
+                    Console.WriteLine(strOption);
                 }
 
                 bool isValid = int.TryParse(Console.ReadLine(), out int inputUserInt);
@@ -251,12 +251,12 @@ namespace JokeManagment.Client
 
         private void CountJoke()
         {
-            string SqlstringCountJoke = $"UPDATE JokeLocationStatistic SET readjokecount = readjokecount + 1 WHERE location_id = {currentUser.LocationId}";
+            string SqlstringCountJoke = $"UPDATE JokeLocationStatistic SET readjokecount = readjokecount + 1 WHERE location_id = {currentUser.location_id}";
             using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
             {
                 try
                 {
-                    RegistrationConnection.Execute($"{SqlstringCountJoke}");
+                    RegistrationConnection.Execute(SqlstringCountJoke);
                 }
                 catch
                 {
@@ -265,6 +265,7 @@ namespace JokeManagment.Client
                     Console.Clear();
                     return;
                 }
+                Console.WriteLine("przeczytanie naliczone do statystyk");
                 Console.ReadLine();
                 Console.Clear();
                 return;

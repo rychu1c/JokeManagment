@@ -20,6 +20,8 @@ namespace JokeManagment.Client
         public void Menu()
         {
             CheckStatisticForCities();
+            Console.ReadLine();
+            Console.Clear();
         }
 
         private void CheckStatisticForCities()

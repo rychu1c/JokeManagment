@@ -27,7 +27,7 @@ namespace JokeManagment.Client
                 ListStrings.Add("1.Wypożycz książkę");
                 ListStrings.Add("2.Sprawdz swoje zadłużenie");
                 ListStrings.Add("3.Oddaj książkę");
-                ListStrings.Add("0.Wypożycz książkę");
+                ListStrings.Add("0.Wróć");
 
                 foreach (string str in ListStrings)
                 {
@@ -45,7 +45,7 @@ namespace JokeManagment.Client
                 {
                     case 0:
                         isUserInMenu = false;
-                        break;
+                        return;
                     case 1:
                         BorrowBook();
                         break;
@@ -75,6 +75,11 @@ namespace JokeManagment.Client
             string sqlStingCheckBooks = $"SELECT * FROM BookShelf WHERE user_id = NULL";
             List<BookShelf> ListAvailableBooks = StaticMethods.GetListFormDB<BookShelf>(sqlStingCheckBooks);
             if (ListAvailableBooks == null) { return; }
+            if (ListAvailableBooks.Count == 0)
+            {
+                Console.WriteLine("Nie ma wolnych książek do wypozyczenia.");
+                return;
+            }
 
             foreach (BookShelf book in ListAvailableBooks)
             {
@@ -90,7 +95,7 @@ namespace JokeManagment.Client
 
             DateTime CurrentTime = DateTime.Now;
             BookShelf pickedBook = ListAvailableBooks.ElementAt(userInput - 1);
-            string sqlStringTakeBook = $"UPDATE BookShelf SET user_id = {currentUser.Id} AND borrow_date = {CurrentTime};";
+            string sqlStringTakeBook = $"UPDATE BookShelf SET user_id = {currentUser.user_id} AND borrow_date = {CurrentTime};";
             if (StaticMethods.isExecutSqlString(sqlStringTakeBook))
             {
                 return;
@@ -99,7 +104,7 @@ namespace JokeManagment.Client
 
         private bool isCountBookTakenCorrect()
         {
-            string sqlStringCountBooks = $"SELECT COUNT(user_id)FROM BookShelf WHERE user_id = {currentUser.Id}";
+            string sqlStringCountBooks = $"SELECT COUNT(*) FROM BookShelf WHERE user_id = {currentUser.user_id}";
 
             int? userCountBook = GetCount(sqlStringCountBooks);
             if (userCountBook == null)
@@ -119,7 +124,7 @@ namespace JokeManagment.Client
 
         private void CalculatePayment()
         {
-            string sqlStingCheckYourBooks = $"SELECT * FROM BookShelf WHERE user_id = {currentUser.Id}";
+            string sqlStingCheckYourBooks = $"SELECT * FROM BookShelf WHERE user_id = {currentUser.user_id}";
             List<BookShelf> ListAvailableBooks = StaticMethods.GetListFormDB<BookShelf>(sqlStingCheckYourBooks);
             if (ListAvailableBooks == null) { return; }
 
@@ -140,7 +145,7 @@ namespace JokeManagment.Client
 
         private void ReturnBook()
         {
-            string sqlStingCheckYourBooks = $"SELECT * FROM BookShelf WHERE user_id = {currentUser.Id}";
+            string sqlStingCheckYourBooks = $"SELECT * FROM BookShelf WHERE user_id = {currentUser.user_id}";
             List<BookShelf> ListAvailableBooks = StaticMethods.GetListFormDB<BookShelf>(sqlStingCheckYourBooks);
             if (ListAvailableBooks == null) { return; }
 
@@ -169,7 +174,7 @@ namespace JokeManagment.Client
             {
                 try
                 {
-                    var DBOutput = Connection.QuerySingleOrDefault<int>($"SQLCommand");
+                    int? DBOutput = Connection.QueryFirst<int>(SQLCommand);
                     return DBOutput;
                 }
                 catch

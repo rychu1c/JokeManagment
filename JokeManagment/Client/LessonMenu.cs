@@ -51,6 +51,8 @@ namespace JokeManagment.Client
                 if (messages.Count+1 < inputUserInt || 0 > inputUserInt)
                 {
                     Console.WriteLine("Błędna wpisana wartość");
+                    Console.ReadLine();
+                    Console.Clear();
                     continue;
                 }
                 switch (inputUserInt)
@@ -75,6 +77,8 @@ namespace JokeManagment.Client
                     default:
                         return;
                 }
+                Console.ReadLine();
+                Console.Clear();
             }
         }
 
@@ -110,7 +114,7 @@ namespace JokeManagment.Client
             }
 
             //string Sqlstringgetteacher = $"SELECT * FROM Teachers WHERE id_subject = {pickedsubject.id_subject};";
-            string Sqlstringavailableteachersubject = $"SELECT user_id, users.login, users.password, users.name, users.surname, users.learningstatus, users.location_id, users.levelofaccess FROM Users RIGHT JOIN (SELECT Foo.teacher_id FROM (SELECT teacher_id, COUNT(student_id) AS StudentCount FROM Teachers WHERE Teachers.id_subject = {pickedsubject.id_subject} GROUP BY teacher_id HAVING COUNT(student_id) < 3 ORDER BY teacher_id) AS Foo) AS Faa ON user_id = Faa.teacher_id;";
+            string Sqlstringavailableteachersubject = $"SELECT users.user_id, users.login, users.password, users.name, users.surname, users.learningstatus, users.location_id, users.levelofaccess FROM Users RIGHT JOIN (SELECT Foo.teacher_id FROM (SELECT teacher_id, COUNT(student_id) AS StudentCount FROM Teachers WHERE Teachers.id_subject = {pickedsubject.id_subject} GROUP BY teacher_id HAVING COUNT(student_id) < 3 ORDER BY teacher_id) AS Foo) AS Faa ON user_id = Faa.teacher_id;";
             List<CurrentUser> teachersList = GetListFromDB<CurrentUser>(Sqlstringavailableteachersubject);
             if (teachersList == null)
             {
@@ -119,7 +123,7 @@ namespace JokeManagment.Client
                 return;
             }
 
-            Console.WriteLine($"Wybierz nauczyciela z którym chcesz uczyć się przdmiotu {pickedsubject.id_subject}:");
+            Console.WriteLine($"Wybierz nauczyciela z którym chcesz uczyć się przdmiotu {pickedsubject.subject_name}:");
             foreach (CurrentUser teacher in teachersList)
             {
                 Console.WriteLine($"{teachersList.IndexOf(teacher)+1}.{teacher.Name} {teacher.Surname}");
@@ -133,8 +137,8 @@ namespace JokeManagment.Client
                 return;
             }
             CurrentUser PickedTeacher = teachersList.ElementAt(userInputInt-1);
-            Console.WriteLine($" picked teacher is {PickedTeacher.Name} {PickedTeacher.Surname}");
-            string Sqlstringinsertstudent = $"INSERT INTO TEACHER VALUES ({PickedTeacher.Id}, {currentUser.Id}, {pickedsubject.id_subject});";
+            Console.WriteLine($"Picked teacher is {PickedTeacher.Name} {PickedTeacher.Surname}");
+            string Sqlstringinsertstudent = $"INSERT INTO Teachers VALUES ({PickedTeacher.user_id}, {currentUser.user_id}, {pickedsubject.id_subject});";
             using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
             {
                 try
@@ -157,13 +161,18 @@ namespace JokeManagment.Client
 
         private void CheckYourAssigment()
         {
-            string Sqlstringcheckyourlesson = $"SELECT user_id, name, surname, SchoolSubjects.subject_name, SchoolSubjects.id_subject FROM Users JOIN Teachers ON Teachers.teacher_id = users.user_id JOIN SchoolSubjects ON SchoolSubjects.id_subject = Teachers.id_subject WHERE Teachers.student_id = {currentUser.Id};";
+            string Sqlstringcheckyourlesson = $"SELECT user_id, name, surname, SchoolSubjects.subject_name, SchoolSubjects.id_subject FROM Users JOIN Teachers ON Teachers.teacher_id = users.user_id JOIN SchoolSubjects ON SchoolSubjects.id_subject = Teachers.id_subject WHERE Teachers.student_id = {currentUser.user_id};";
             
             List<StudentTeachers> StudentTeachers = new List<StudentTeachers>();
             StudentTeachers = GetListFromDB<StudentTeachers>(Sqlstringcheckyourlesson);
             if (StudentTeachers == null)
             {
                 return;
+            }
+
+            if (StudentTeachers.Count == 0)
+            {
+                Console.WriteLine("Jeszcze nigdzie nie jesteś zapisany");
             }
 
             foreach (StudentTeachers teacher in StudentTeachers)
@@ -174,7 +183,7 @@ namespace JokeManagment.Client
 
         private void SignOutLesson()
         {
-            string Sqlstringgetyourlesson = $"SELECT user_id, name, surname, SchoolSubjects.subject_name, SchoolSubjects.id_subject FROM Users JOIN Teachers ON Teachers.teacher_id = users.user_id JOIN SchoolSubjects ON SchoolSubjects.id_subject = Teachers.id_subject WHERE Teachers.student_id = {currentUser.Id};";
+            string Sqlstringgetyourlesson = $"SELECT user_id, name, surname, SchoolSubjects.subject_name, SchoolSubjects.id_subject FROM Users JOIN Teachers ON Teachers.teacher_id = users.user_id JOIN SchoolSubjects ON SchoolSubjects.id_subject = Teachers.id_subject WHERE Teachers.student_id = {currentUser.user_id};";
 
             List<StudentTeachers> TeachersOfStudent = GetListFromDB<StudentTeachers>(Sqlstringgetyourlesson);
             if (TeachersOfStudent == null) 
@@ -194,12 +203,10 @@ namespace JokeManagment.Client
             if (!isValid || userInputInt > TeachersOfStudent.Count || userInputInt < 0)
             {
                 Console.WriteLine("Błędna wartość");
-                Console.ReadLine();
-                Console.Clear();
             }
             StudentTeachers PickedStudent = TeachersOfStudent.ElementAt(userInputInt-1);
 
-            string Sqlstringdelitelesson = $"UPDATE Teachers SET student_id = NULL WHERE teacher_id = {PickedStudent.user_id} AND student_id = {currentUser.Id} AND id_subject = {PickedStudent.id_subject};";
+            string Sqlstringdelitelesson = $"UPDATE Teachers SET student_id = NULL WHERE teacher_id = {PickedStudent.user_id} AND student_id = {currentUser.user_id} AND id_subject = {PickedStudent.id_subject};";
 
             using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
             {
@@ -210,13 +217,9 @@ namespace JokeManagment.Client
                 catch
                 {
                     Console.WriteLine("Nie udało się usunąć.");
-                    Console.ReadLine();
-                    Console.Clear();
                     return;
                 }
                 Console.WriteLine("Usunięcie powiodło się!");
-                Console.ReadLine();
-                Console.Clear();
                 return;
             }
         }
@@ -245,7 +248,7 @@ namespace JokeManagment.Client
             }
 
             SchoolSubjects subjects = schoolSubjects.ElementAt(userInputInt - 1);
-            string Sqlstringaddsubject = $"INSERT INTO Teachers VALUES({currentUser.Id}, NULL, {subjects.id_subject})";
+            string Sqlstringaddsubject = $"INSERT INTO Teachers VALUES({currentUser.user_id}, NULL, {subjects.id_subject})";
 
             using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
             {
@@ -256,13 +259,9 @@ namespace JokeManagment.Client
                 catch
                 {
                     Console.WriteLine("Dodanie przedmiotu nie powioło się .");
-                    Console.ReadLine();
-                    Console.Clear();
                     return;
                 }
                 Console.WriteLine("Dodanie przedmiotu powiodło się!");
-                Console.ReadLine();
-                Console.Clear();
                 return;
             }
         }

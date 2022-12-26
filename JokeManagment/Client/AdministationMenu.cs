@@ -19,7 +19,7 @@ namespace JokeManagment.Client
 
         public void Menu()
         {
-            if (((int)currentUser.LevelOfAccess) != 1)
+            if (((int)currentUser.LevelOfAccess) == 1)
             {
                 MenuLogic();
             }
@@ -88,7 +88,7 @@ namespace JokeManagment.Client
 
             CurrentUser PickedUser = ListUsers.ElementAt(userInputInt + 1);
 
-            string SqlStringAddAdmin = $"UPDATE Users SET levelofaccess = 1 WHERE user_id = {PickedUser.Id}";
+            string SqlStringAddAdmin = $"UPDATE Users SET levelofaccess = 1 WHERE user_id = {PickedUser.user_id}";
 
             using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
             {
@@ -136,7 +136,7 @@ namespace JokeManagment.Client
 
             CurrentUser PickedUser = ListUsers.ElementAt(userInputInt + 1);
 
-            string SqlStringDeliteUser = $"UPDATE Users SET levelofaccess = 0 WHERE user_id = {PickedUser.Id}";
+            string SqlStringDeliteUser = $"UPDATE Users SET levelofaccess = 0 WHERE user_id = {PickedUser.user_id}";
 
             using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
             {

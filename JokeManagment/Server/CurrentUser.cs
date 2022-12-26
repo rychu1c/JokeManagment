@@ -2,13 +2,13 @@
 {
     public class CurrentUser
     {
-        public int Id { get; set; }
+        public int user_id { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public LearningLevel LearningStatus { get; set; }
-        public int LocationId { get; set; }
+        public int location_id { get; set; }
         public AccessLevel LevelOfAccess { get; set; } = AccessLevel.User;
 
 
@@ -31,7 +31,7 @@
             Name = name;
             Surname = surname;
             LearningStatus = status;
-            LocationId = location;
+            location_id = location;
         }
         public CurrentUser()
         {
