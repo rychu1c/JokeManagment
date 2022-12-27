@@ -14,8 +14,11 @@ namespace JokeManagment.Client
         public void StartMenu()
         {
             Console.WriteLine("Witaj w aplikacji");
-            LoginOrRegisterMenu();
-            MenuAfterLogin();
+            while (true)
+            {
+                LoginOrRegisterMenu();
+                MenuAfterLogin();
+            }
         }
 
         private void LoginOrRegisterMenu()
@@ -50,10 +53,9 @@ namespace JokeManagment.Client
                         reg.MenuRegistration();
                         break;
                     case 0:
-                        Console.WriteLine("Wyjdz z aplikcaji");
                         IsCurrentUserNull = false;
-                        Console.ReadLine();
-                        continue;
+                        Environment.Exit(0);
+                        return;
                     default:
                         Console.WriteLine("Wpisana wartość niepoprawna");
                         Console.ReadLine();
@@ -65,6 +67,7 @@ namespace JokeManagment.Client
                 {
                     IsCurrentUserNull = false;
                 }
+
             }
         }
 
@@ -118,7 +121,6 @@ namespace JokeManagment.Client
                         return;
                 }
             }
-            LoginOrRegisterMenu();
         }
 
         private void PrintOutList(List<string> Liststring)
@@ -127,6 +129,11 @@ namespace JokeManagment.Client
             {
                 Console.WriteLine(str);
             }
+        }
+
+        private void Exit()
+        {
+            
         }
     }
 }
