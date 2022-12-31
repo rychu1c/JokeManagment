@@ -38,12 +38,12 @@ namespace JokeManagment.Client
                 }
                 catch
                 {
-                    Console.WriteLine("Nie udało się wykonac zawołnia Spróbuj jeszcze raz");
+                    Console.WriteLine("Nie udało się wykonac zawołnia Spróbuj jeszcze raz. Naciśnij dowolny klawisz by kontynuować.");
                     Console.ReadLine();
                     Console.Clear();
                     return false;
                 }
-                Console.WriteLine("Rejestracja powiodła się!");
+                Console.WriteLine("Zapis powiodł się. Naciśnij dowolny klawisz by kontynuować.");
                 Console.ReadLine();
                 Console.Clear();
                 return true;

@@ -25,11 +25,12 @@ namespace JokeManagment.Client
             }
             else
             {
-                Console.WriteLine("Brak dostępu");
-                Console.ReadLine();
+                Console.WriteLine("Brak dostępu. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
                 Console.Clear();
             }
         }
+
         private void MenuLogic()
         {
             bool isUserInMenu = true;
@@ -43,7 +44,9 @@ namespace JokeManagment.Client
                 bool isValid = int.TryParse(Console.ReadLine(), out int userInputInt);
                 if (!isValid || List.Count < userInputInt || 0 > userInputInt)
                 {
-                    Console.WriteLine("Błąd wpisanej wartości");
+                    Console.WriteLine("Błąd wpisanej wartości. Wciśnij dowolny klawisz by kontynuować.");
+                    Console.ReadKey();
+                    Console.Clear();
                     return;
                 }
 
@@ -66,9 +69,9 @@ namespace JokeManagment.Client
         {
             string SqlStrigGetListOfUsers = $"SELECT * FROM Users WHERE levelofaccess = 0";
             List < CurrentUser > ListUsers = GetListFromDB<CurrentUser>(SqlStrigGetListOfUsers);
-            if (ListUsers == null)
+            if (ListUsers == null || ListUsers.Count == 0)
             {
-                Console.WriteLine("Lista użytkowników jest pusta");
+                Console.WriteLine("Lista użytkowników jest pusta. Wciśnij dowolny klawisz by kontynuować");
                 return;
             }
 
@@ -81,9 +84,10 @@ namespace JokeManagment.Client
             bool isValid = int.TryParse(Console.ReadLine(), out int userInputInt);
             if (ListUsers.Count < userInputInt || userInputInt >= 0)
             {
-                Console.WriteLine("Błąd zła wartość");
-                return;
+                Console.WriteLine("Błąd zła wartość. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
                 Console.Clear();
+                return;
             }
 
             CurrentUser PickedUser = ListUsers.ElementAt(userInputInt + 1);
@@ -98,25 +102,27 @@ namespace JokeManagment.Client
                 }
                 catch
                 {
-                    Console.WriteLine("Nie udało się nadać praw");
-                    Console.ReadLine();
+                    Console.WriteLine("Nie udało się nadać praw. Wciśnij dowolny klawisz by kontynuować");
+                    Console.ReadKey();
                     Console.Clear();
                     return;
                 }
-                Console.WriteLine("Zmieniono prawa na administratora");
-                Console.ReadLine();
+                Console.WriteLine("Zmieniono prawa na administratora. Wciśnij dowolny klawisz by kontynuować");
+                Console.ReadKey();
                 Console.Clear();
                 return;
             }
-
         }
+
         private void DeleteAdministrator()
         {
             string SqlStrigGetListOfUsers = $"SELECT * FROM Users WHERE levelofaccess = 1";
             List<CurrentUser> ListUsers = GetListFromDB<CurrentUser>(SqlStrigGetListOfUsers);
-            if (ListUsers == null)
+            if (ListUsers == null || ListUsers.Count == 0)
             {
-                Console.WriteLine("Lista użytkowników jest pusta");
+                Console.WriteLine("Lista użytkowników jest pusta. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
+                Console.Clear();
                 return;
             }
 
@@ -129,9 +135,10 @@ namespace JokeManagment.Client
             bool isValid = int.TryParse(Console.ReadLine(), out int userInputInt);
             if (ListUsers.Count < userInputInt || userInputInt >= 0)
             {
-                Console.WriteLine("Błąd zła wartość");
-                return;
+                Console.WriteLine("Błąd zła wartość. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
                 Console.Clear();
+                return;
             }
 
             CurrentUser PickedUser = ListUsers.ElementAt(userInputInt + 1);
@@ -157,6 +164,7 @@ namespace JokeManagment.Client
                 return;
             }
         }
+
         private List<T> GetListFromDB<T>(string SQLCommand)
         {
             var list = new List<T>();

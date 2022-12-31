@@ -23,7 +23,13 @@ namespace JokeManagment.Server
             Console.WriteLine("Podaj swoje hasło");
             string? inputPassword = Console.ReadLine();
 
-            if (string.IsNullOrEmpty(inputLogin) || string.IsNullOrEmpty(inputPassword)) { return currentUser; }
+            if (string.IsNullOrEmpty(inputLogin) || string.IsNullOrEmpty(inputPassword)) 
+            {
+                Console.WriteLine("Wpisana wartość nie prawidłowa. Wcisnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
+                currentUser = null;
+                return currentUser;
+            }
 
             return currentUser = GetUserDB(currentUser, inputLogin, inputPassword);
         }
@@ -34,12 +40,19 @@ namespace JokeManagment.Server
                 try
                 {
                     user = loginConnection.QuerySingleOrDefault<CurrentUser>($"SELECT * FROM users WHERE login = '{Login}' AND password = '{password}'");//Stored Procedure
+                    
                 }
                 catch
                 {
-                    Console.WriteLine("Błąd logowania,spróbuj ponownie.");
+                    Console.WriteLine("Błąd logowania, Wciśnij dowolny klawisz.");
+                    Console.ReadKey();
                     return user = null;
                 }
+            }
+            if (user == null)
+            {
+                Console.WriteLine("Błąd logowania, Wciśnij dowolny klawisz.");
+                Console.ReadKey();
             }
             return user;
         }

@@ -37,14 +37,15 @@ namespace JokeManagment.Client
                 }
 
                 bool isValid = int.TryParse(Console.ReadLine(), out int inputUserInt);
-                if (!isValid || ListString.Count < inputUserInt || 0 > inputUserInt)
+                if (!isValid || ListString.Count <= inputUserInt || 0 > inputUserInt)
                 {
-                    Console.WriteLine("Wpisano niepoprawną wartość");
-                    Console.ReadLine();
+                    Console.WriteLine("Wpisano niepoprawną wartość. Wciśnij dowolny klawisz by kontynuować.");
+                    Console.ReadKey();
                     Console.Clear();
                     isUserQuittedMenu = true;
                     continue;
                 }
+                Console.Clear();
 
                 switch (inputUserInt)
                 {
@@ -60,7 +61,8 @@ namespace JokeManagment.Client
                     case 3:
                         if (((int)currentUser.LevelOfAccess) != 1)
                         {
-                            Console.WriteLine("Nie wystarczające uprwanienie dla wybranej czynnosci");
+                            Console.WriteLine("Nie wystarczające uprwanienie dla wybranej czynnosci. Wciśnij dowolny klawisz by kontynuować.");
+                            Console.ReadKey();
                             break;
                         }
                         AddJoke();
@@ -76,7 +78,7 @@ namespace JokeManagment.Client
             string Sqlstringgettype = $"SELECT * FROM JokeType";
             List<JokeType> jokeTypes = new List<JokeType>();
             jokeTypes = GetJokeFormDB<JokeType>(Sqlstringgettype);
-            if (jokeTypes == null)
+            if (jokeTypes == null || jokeTypes.Count == 0)
             {
                 return;
             }
@@ -90,7 +92,7 @@ namespace JokeManagment.Client
             bool isVaild = int.TryParse(Console.ReadLine(), out int inputId);
             if (!isVaild)
             {
-                Console.WriteLine("Niepoprawna wartośc");
+                Console.WriteLine("Niepoprawna wartośc. Wciśnij dowolny klawisz by kontynuować.");
                 Console.ReadKey();
                 return;
             }
@@ -99,7 +101,7 @@ namespace JokeManagment.Client
             JokeType jokeTypeChosen = jokeTypes.FirstOrDefault(type => type.category_joke_id == inputId);
             if (jokeTypeChosen == null)
             {
-                Console.WriteLine("Nie znaleziono kategorii");
+                Console.WriteLine("Nie znaleziono kategorii. Wciśnij dowolny klawisz by kontynuować.");
                 Console.ReadKey();
                 return;
             }
@@ -109,7 +111,7 @@ namespace JokeManagment.Client
             List<JokeBase> JokeList = new List<JokeBase>();
             JokeList = GetJokeFormDB<JokeBase>(Sqlstringgetjoke);
 
-            if (JokeList == null)
+            if (JokeList == null || JokeList.Count == 0)
             {
                 return;
             }
@@ -123,7 +125,7 @@ namespace JokeManagment.Client
             bool isVaild2 = int.TryParse(Console.ReadLine(), out int inputId2);
             if (!isVaild)
             {
-                Console.WriteLine("Niepoprawna wartośc");
+                Console.WriteLine("Niepoprawna wartość. Wciśnij dowolny klawisz by kontynuować.");
                 Console.ReadKey();
                 return;
             }
@@ -131,7 +133,7 @@ namespace JokeManagment.Client
             JokeBase JokeChosen = JokeList.FirstOrDefault(jokes =>  jokes.Joke_id == inputId2);
             if (JokeChosen == null)
             {
-                Console.WriteLine("Nie znaleziono żartu");
+                Console.WriteLine("Nie znaleziono żartu. Wciśnij dowolny klawisz by kontynuować.");
                 Console.ReadKey();
                 return;
             }
@@ -145,7 +147,7 @@ namespace JokeManagment.Client
             List<int> listjokeid = new List<int>();
             listjokeid = GetJokeFormDB<int>(SqlstringForIdJoke);
 
-            if (listjokeid == null)
+            if (listjokeid == null || listjokeid.Count == 0)
             {
                 return;
             }
@@ -163,7 +165,7 @@ namespace JokeManagment.Client
                 }
                 catch
                 {
-                    Console.WriteLine("Błąd pobrania losowego żartu,spróbuj ponownie.");
+                    Console.WriteLine("Błąd pobrania losowego żartu. Wciśnij dowolny klawisz by kontynuować..");
                     Console.ReadKey();
                     return;
                 }
@@ -193,7 +195,7 @@ namespace JokeManagment.Client
             bool isVaild = int.TryParse(Console.ReadLine(),out int inputId);
             if (!isVaild ) 
             {
-                Console.WriteLine("Niepoprawna wartośc");
+                Console.WriteLine("Niepoprawna wartośc. Wciśnij dowolny kalwisz by kontynuować.");
                 Console.ReadKey();
                 return; 
             }
@@ -201,7 +203,7 @@ namespace JokeManagment.Client
             JokeType jokeTypeChosen = jokeTypes.FirstOrDefault(type => type.category_joke_id == inputId);
             if (jokeTypeChosen == null)
             {
-                Console.WriteLine("Nie znaleziono kategorii");
+                Console.WriteLine("Nie znaleziono kategorii. Wciśnij dowolny klawisz by kontynuować.");
                 Console.ReadKey();
                 return;
             }
@@ -218,13 +220,13 @@ namespace JokeManagment.Client
                 }
                 catch
                 {
-                    Console.WriteLine("Nie udało się wysłać formularza. Spróbuj jeszcze raz");
-                    Console.ReadLine();
+                    Console.WriteLine("Nie udało się wysłać formularza. Wciśnij dowolny klawisz by kontynuować.");
+                    Console.ReadKey();
                     Console.Clear();
                     return;
                 }
-                Console.WriteLine("Rejestracja powiodła się!");
-                Console.ReadLine();
+                Console.WriteLine("Rejestracja powiodła się. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
                 Console.Clear();
                 return;
             }
@@ -242,7 +244,8 @@ namespace JokeManagment.Client
                 }
                 catch
                 {
-                    Console.WriteLine("Błąd pobrania listy.");
+                    Console.WriteLine("Błąd pobrania listy. Wciśnij dowolny klawisz by kontynuować.");
+                    Console.ReadKey();
                     return list = null;
                 }
             }
@@ -260,13 +263,13 @@ namespace JokeManagment.Client
                 }
                 catch
                 {
-                    Console.WriteLine("Błąd naliczenia do statystyk");
-                    Console.ReadLine();
+                    Console.WriteLine("Błąd naliczenia do statystyk. Wciśnij dowolny klawisz by kontynuować.");
+                    Console.ReadKey();
                     Console.Clear();
                     return;
                 }
-                Console.WriteLine("przeczytanie naliczone do statystyk");
-                Console.ReadLine();
+                Console.WriteLine("przeczytanie naliczone do statystyk. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
                 Console.Clear();
                 return;
             }

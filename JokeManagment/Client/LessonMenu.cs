@@ -19,10 +19,10 @@ namespace JokeManagment.Client
 
         public void Menu()
         {
-            StudentMenu();
+            TeachingMenu();
         }
 
-        private void StudentMenu()
+        private void TeachingMenu()
         {
             bool isUserQuittedmenu = false;
             while (!isUserQuittedmenu)
@@ -32,11 +32,11 @@ namespace JokeManagment.Client
                 messages.Add("1.Zapisz się na lekcje");
                 messages.Add("2.Sprawdz gdzie jesteś zapisany");
                 messages.Add("3.Wypisz się z zajęć");
+                messages.Add("4.Zostań nauczucielem");
 
                 if(((int)currentUser.LearningStatus) == 2)
                 {
-                    messages.Add("4.Dodaj nowy przedmiot który uczysz");
-                    messages.Add("5.Usuń swoje zajecia");
+                    messages.Add("5.Dodaj nowy przedmiot który uczysz");
                 }
 
                 foreach (string m in messages)
@@ -46,15 +46,21 @@ namespace JokeManagment.Client
 
                 string inputUser = Console.ReadLine();
                 bool isValid = int.TryParse(inputUser, out int inputUserInt);
-                if (!isValid) { continue; }
-
-                if (messages.Count+1 < inputUserInt || 0 > inputUserInt)
+                if (!isValid || messages.Count-1 < inputUserInt || 0 > inputUserInt)
                 {
-                    Console.WriteLine("Błędna wpisana wartość");
-                    Console.ReadLine();
+                    Console.WriteLine("Błędna wpisana wartość. Wciaśnij dowolny przycisk by kontynuować");
+                    Console.ReadKey();
                     Console.Clear();
                     continue;
                 }
+                if (0 == inputUserInt) 
+                {
+                    Console.Clear();
+                    return;
+                }
+                
+                Console.Clear();
+
                 switch (inputUserInt)
                 {
                     case 1:
@@ -69,15 +75,21 @@ namespace JokeManagment.Client
                     case 4:
                         if (((int)currentUser.LearningStatus) == 2)
                         {
+                            BecomeTeacher();
+                            break;
+                        }
+                        Console.WriteLine("Nie odpowiedznie uprawnienia. Wciśnij dowolny klawisz by kontynuować.");
+                        break;
+                    case 5:
+                        if (((int)currentUser.LearningStatus) == 2)
+                        {
                             AddYourSubject();
                             break;
                         }
-                        Console.WriteLine("Brak dostepu");
+                        Console.WriteLine("Nie odpowiedznie uprawnienia. Wciśnij dowolny klawisz by kontynuować.");
                         break;
-                    default:
-                        return;
                 }
-                Console.ReadLine();
+                Console.ReadKey();
                 Console.Clear();
             }
         }
@@ -89,9 +101,16 @@ namespace JokeManagment.Client
             List<SchoolSubjects> ListSubjects = new List<SchoolSubjects>();
 
             ListSubjects = GetListFromDB<SchoolSubjects>(Sqlstringgetsubjects);
-            if (ListSubjects == null) return;
+            if (ListSubjects == null || ListSubjects.Count == 0) 
+            {
+                Console.WriteLine("Błąd pobrania listy uczniów. Wciaśnij dowolny przycisk by kontynuować");
+                Console.ReadKey();
+                Console.Clear();
+                return;
+            }
+            
 
-            Console.WriteLine("Wybier jakiego przedmiotu chcesz się uczyć z nizej wymienionych:");
+            Console.WriteLine("Wybier jakiego przedmiotu chcesz się uczyć z niżej wymienionych:");
             foreach (SchoolSubjects subjects in ListSubjects)
             {
                 Console.WriteLine($"{subjects.id_subject}. {subjects.subject_name}");
@@ -101,25 +120,28 @@ namespace JokeManagment.Client
             bool isValid = int.TryParse(inputUser, out int inputUserInt);
             if (!isValid) 
             {
-                Console.WriteLine("Wpisana niepoprawna wartość");
-                return; 
-            }
-
-            SchoolSubjects pickedsubject = ListSubjects.FirstOrDefault<SchoolSubjects>(sub => sub.id_subject == inputUserInt);
-            if (pickedsubject == null)
-            {
-                Console.WriteLine("Nie udało się pobrać wybranego przedmiotu. Powrót");
-                Console.ReadLine();
+                Console.WriteLine("Wpisana niepoprawna wartość. Wiciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
+                Console.Clear();
                 return;
             }
 
-            //string Sqlstringgetteacher = $"SELECT * FROM Teachers WHERE id_subject = {pickedsubject.id_subject};";
+            SchoolSubjects pickedsubject = ListSubjects.FirstOrDefault<SchoolSubjects>(sub => sub.id_subject == inputUserInt);
+            if (pickedsubject == null )
+            {
+                Console.WriteLine("Nie udało się pobrać wybranego przedmiotu. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
+                Console.Clear();
+                return;
+            }
+
             string Sqlstringavailableteachersubject = $"SELECT users.user_id, users.login, users.password, users.name, users.surname, users.learningstatus, users.location_id, users.levelofaccess FROM Users RIGHT JOIN (SELECT Foo.teacher_id FROM (SELECT teacher_id, COUNT(student_id) AS StudentCount FROM Teachers WHERE Teachers.id_subject = {pickedsubject.id_subject} GROUP BY teacher_id HAVING COUNT(student_id) < 3 ORDER BY teacher_id) AS Foo) AS Faa ON user_id = Faa.teacher_id;";
             List<CurrentUser> teachersList = GetListFromDB<CurrentUser>(Sqlstringavailableteachersubject);
-            if (teachersList == null)
+            if (teachersList == null || teachersList.Count == 0)
             {
-                Console.WriteLine("Bład pobrania listy uczniów. Powrót");
-                Console.ReadLine();
+                Console.WriteLine("Bład pobrania listy uczniów. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
+                Console.Clear();
                 return;
             }
 
@@ -133,7 +155,9 @@ namespace JokeManagment.Client
             bool isValid3 = int.TryParse(userInput, out int userInputInt);
             if (!isValid3 || userInputInt > teachersList.Count || userInputInt <= 0)
             {
-                Console.WriteLine("Nie wybrano nauczyciela");
+                Console.WriteLine("Nie wybrano nauczyciela. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
+                Console.Clear();
                 return;
             }
             CurrentUser PickedTeacher = teachersList.ElementAt(userInputInt-1);
@@ -147,13 +171,13 @@ namespace JokeManagment.Client
                 }
                 catch
                 {
-                    Console.WriteLine("Nie udało się zapisać. Spróbuj ponownie");
-                    Console.ReadLine();
+                    Console.WriteLine("Nie udało się zapisać. Wciśnij dowolny klawisz by kontynuować.");
+                    Console.ReadKey();
                     Console.Clear();
                     return;
                 }
-                Console.WriteLine("Zapis powiodło się!");
-                Console.ReadLine();
+                Console.WriteLine("Zapis powiodło się. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
                 Console.Clear();
                 return;
             }
@@ -165,14 +189,12 @@ namespace JokeManagment.Client
             
             List<StudentTeachers> StudentTeachers = new List<StudentTeachers>();
             StudentTeachers = GetListFromDB<StudentTeachers>(Sqlstringcheckyourlesson);
-            if (StudentTeachers == null)
+            if (StudentTeachers.Count == 0 || StudentTeachers == null)
             {
+                Console.WriteLine("Jeszcze nigdzie nie jesteś zapisany. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
+                Console.Clear();
                 return;
-            }
-
-            if (StudentTeachers.Count == 0)
-            {
-                Console.WriteLine("Jeszcze nigdzie nie jesteś zapisany");
             }
 
             foreach (StudentTeachers teacher in StudentTeachers)
@@ -186,7 +208,7 @@ namespace JokeManagment.Client
             string Sqlstringgetyourlesson = $"SELECT user_id, name, surname, SchoolSubjects.subject_name, SchoolSubjects.id_subject FROM Users JOIN Teachers ON Teachers.teacher_id = users.user_id JOIN SchoolSubjects ON SchoolSubjects.id_subject = Teachers.id_subject WHERE Teachers.student_id = {currentUser.user_id};";
 
             List<StudentTeachers> TeachersOfStudent = GetListFromDB<StudentTeachers>(Sqlstringgetyourlesson);
-            if (TeachersOfStudent == null) 
+            if (TeachersOfStudent == null || TeachersOfStudent.Count == 0) 
             {
                 return;
             }
@@ -200,9 +222,12 @@ namespace JokeManagment.Client
 
             string userInput = Console.ReadLine();
             bool isValid = int.TryParse(userInput, out int userInputInt);
-            if (!isValid || userInputInt > TeachersOfStudent.Count || userInputInt < 0)
+            if (!isValid || userInputInt > TeachersOfStudent.Count || userInputInt <= 0)
             {
-                Console.WriteLine("Błędna wartość");
+                Console.WriteLine("Błędna wartość. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
+                Console.Clear();
+                return;
             }
             StudentTeachers PickedStudent = TeachersOfStudent.ElementAt(userInputInt-1);
 
@@ -216,10 +241,14 @@ namespace JokeManagment.Client
                 }
                 catch
                 {
-                    Console.WriteLine("Nie udało się usunąć.");
+                    Console.WriteLine("Nie udało się usunąć. Wciśnij dowolny klawisz by kontynuować.");
+                    Console.ReadKey();
+                    Console.Clear();
                     return;
                 }
-                Console.WriteLine("Usunięcie powiodło się!");
+                Console.WriteLine("Usunięcie powiodło się. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
+                Console.Clear();
                 return;
             }
         }
@@ -228,12 +257,14 @@ namespace JokeManagment.Client
         {
             string Sqlstringgetsubjects = "SELECT * FROM SchoolSubjects";
             List<SchoolSubjects> schoolSubjects = GetListFromDB<SchoolSubjects>(Sqlstringgetsubjects);
-            if (schoolSubjects == null)
+            if (schoolSubjects == null || schoolSubjects.Count == 0)
             {
+                Console.ReadKey();
+                Console.Clear();
                 return;
             }
 
-            Console.WriteLine("Których przedmiot chcesz uczyć?");
+            Console.WriteLine("Który przedmiot chcesz uczyć?");
             foreach (SchoolSubjects subject in schoolSubjects)
             {
                 Console.WriteLine($"{schoolSubjects.IndexOf(subject)+1}. {subject.subject_name}");
@@ -243,9 +274,12 @@ namespace JokeManagment.Client
             bool isVaild = int.TryParse(userInput, out int userInputInt);
             if (!isVaild || userInputInt > schoolSubjects.Count() || userInputInt <= 0)
             {
-                Console.WriteLine("Wpisana wartość jest nie poprawna");
+                Console.WriteLine("Wpisana wartość jest nie poprawna. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
+                Console.Clear();
                 return;
             }
+            Console.WriteLine("Wciśnij dowolny klawisz by kontynuować");
 
             SchoolSubjects subjects = schoolSubjects.ElementAt(userInputInt - 1);
             string Sqlstringaddsubject = $"INSERT INTO Teachers VALUES({currentUser.user_id}, NULL, {subjects.id_subject})";
@@ -258,13 +292,24 @@ namespace JokeManagment.Client
                 }
                 catch
                 {
-                    Console.WriteLine("Dodanie przedmiotu nie powioło się .");
+                    Console.WriteLine("Dodanie przedmiotu nie powioło się. Wciśnij dowolny klawisz by kontynuować.");
+                    Console.ReadKey();
+                    Console.Clear();
                     return;
                 }
-                Console.WriteLine("Dodanie przedmiotu powiodło się!");
+                Console.WriteLine("Dodanie przedmiotu powiodło się. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
+                Console.Clear();
                 return;
             }
         }
+
+        private void BecomeTeacher()
+        {
+            string Sqlstringstatuschange = $"UPDATE Users SET learningstatus = 2 WHERE user_id = {currentUser.user_id};";
+            StaticMethods.isExecutSqlString(Sqlstringstatuschange);
+        }
+
         private List<T> GetListFromDB<T>(string SQLCommand)
         {
             var list = new List<T>();
@@ -280,6 +325,7 @@ namespace JokeManagment.Client
                     return list = null;
                 }
             }
+            Console.Clear();
             return list;
         }
     }

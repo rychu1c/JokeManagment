@@ -37,9 +37,12 @@ namespace JokeManagment.Client
                 bool isValid = int.TryParse(Console.ReadLine(), out int inputUserInt);
                 if (!isValid || ListStrings.Count - 1 < inputUserInt || 0 > inputUserInt)
                 {
-                    Console.WriteLine("Błąd wpisanej wartości");
+                    Console.WriteLine("Błąd wpisanej wartości. Wciśnij dowolny klawisz by kontynuować.");
+                    Console.ReadKey();
+                    Console.Clear();
                     return;
                 }
+                Console.Clear();
 
                 switch (inputUserInt)
                 {
@@ -69,15 +72,20 @@ namespace JokeManagment.Client
         {
             if (isCountBookTakenCorrect() == false)
             {
+                Console.WriteLine("Osiągnieto już limit pobranych książek lub błąd pobrania danych. Wciśnij dowolny klawisz by kontynuować.");
                 return;
             }
 
             string sqlStingCheckBooks = $"SELECT * FROM BookShelf WHERE user_id = NULL";
             List<BookShelf> ListAvailableBooks = StaticMethods.GetListFormDB<BookShelf>(sqlStingCheckBooks);
-            if (ListAvailableBooks == null) { return; }
+            if (ListAvailableBooks == null) 
+            {
+                Console.WriteLine("Błąd pobrania pobrania danych");
+                return;
+            }
             if (ListAvailableBooks.Count == 0)
             {
-                Console.WriteLine("Nie ma wolnych książek do wypozyczenia.");
+                Console.WriteLine("Nie ma wolnych książek do wypozyczenia. Wciśnij dowolny klawisz by kontynuować.");
                 return;
             }
 
@@ -89,7 +97,7 @@ namespace JokeManagment.Client
             bool isValid = int.TryParse(Console.ReadLine(), out int userInput);
             if (!isValid || ListAvailableBooks.Count < userInput || 0 >= userInput)
             {
-                Console.WriteLine("Błąd wpisanej wartości");
+                Console.WriteLine("Błąd wpisanej wartości. Wciśnij dowolny klawisz by kontynuować.");
                 return;
             }
 
@@ -107,13 +115,12 @@ namespace JokeManagment.Client
             string sqlStringCountBooks = $"SELECT COUNT(*) FROM BookShelf WHERE user_id = {currentUser.user_id}";
 
             int? userCountBook = GetCount(sqlStringCountBooks);
-            if (userCountBook == null)
+            if (userCountBook == null )
             {
                 return false;
             }
             else if (userCountBook >= 2)
             {
-                Console.WriteLine("Limit wypożyczonych ksiażek na raz osiągniety");
                 return false;
             }
             else
@@ -126,12 +133,26 @@ namespace JokeManagment.Client
         {
             string sqlStingCheckYourBooks = $"SELECT * FROM BookShelf WHERE user_id = {currentUser.user_id}";
             List<BookShelf> ListAvailableBooks = StaticMethods.GetListFormDB<BookShelf>(sqlStingCheckYourBooks);
-            if (ListAvailableBooks == null) { return; }
+            if (ListAvailableBooks == null)
+            {
+                Console.WriteLine("Błąd pobrania danych. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
+                Console.Clear();
+                return;
+            }
+            if (ListAvailableBooks.Count == 0) 
+            {
+                Console.WriteLine("Nie masz żadnych wypożyczonych książek. Wciśnij dowolny klawisz by kontynuować.");
+                Console.ReadKey();
+                Console.Clear();
+                return;
+            }
 
             foreach (BookShelf book in ListAvailableBooks)
             {
                 Console.WriteLine($"{ListAvailableBooks.IndexOf(book) + 1}. {book.bookname} Zaległa kwota to {CalculateDebt(book.borrow_date)}");
             }
+            Console.WriteLine("Wciśnij dowolny klawisz by kontynuować");
         }
 
         private decimal CalculateDebt(DateTime booktime)
@@ -147,8 +168,18 @@ namespace JokeManagment.Client
         {
             string sqlStingCheckYourBooks = $"SELECT * FROM BookShelf WHERE user_id = {currentUser.user_id}";
             List<BookShelf> ListAvailableBooks = StaticMethods.GetListFormDB<BookShelf>(sqlStingCheckYourBooks);
-            if (ListAvailableBooks == null) { return; }
+            if (ListAvailableBooks == null) 
+            {
+                Console.WriteLine("Błąd serwera. Wciśnij dowolny klawisz by kontynuować.");
+                return;
+            }
+            if (ListAvailableBooks.Count == 0)
+            {
+                Console.WriteLine("Nie masz żadnej ksiązki do zwrócenia. Wciśij dowolny klawisz by kontynuować.");
+                return;
+            }
 
+            Console.WriteLine("Wybierz którą ksiażkę chcesz zwrócić.");
             foreach (BookShelf book in ListAvailableBooks)
             {
                 Console.WriteLine($"{ListAvailableBooks.IndexOf(book) + 1}. {book.bookname} Zaległa kwota to {CalculateDebt(book.borrow_date)}");
@@ -157,15 +188,16 @@ namespace JokeManagment.Client
             bool isValid = int.TryParse(Console.ReadLine(), out int userInput);
             if (!isValid || ListAvailableBooks.Count < userInput || 0 >= userInput)
             {
-                Console.WriteLine("Błąd wpisanej wartości");
+                Console.WriteLine("Błąd wpisanej wartości. Wciśnij dowolny klawisz by kontynuować.");
                 return;
             }
 
             string sqlStringReturnBook = $"UPDATE BookShelf SET user_id = NULL AND borrow_date = NULL;";
-            if (!StaticMethods.isExecutSqlString(sqlStringReturnBook))
+            if (StaticMethods.isExecutSqlString(sqlStringReturnBook))
             {
                 return;
             }
+            Console.WriteLine("Wciśnij dowolny klawisz by kontynuować.");
         }
 
         private int? GetCount(string SQLCommand)
@@ -179,7 +211,6 @@ namespace JokeManagment.Client
                 }
                 catch
                 {
-                    Console.WriteLine("Błąd pobrania danych z bazy");
                     return null;
                 }
             }

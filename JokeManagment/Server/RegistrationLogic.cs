@@ -15,19 +15,39 @@ namespace JokeManagment.Server
             //if its free write user to DB and return true
             Console.WriteLine("Podaj login nowego użytkownika");
             string? inputLogin = Console.ReadLine();
-            if (string.IsNullOrEmpty(inputLogin) || !inputLogin.isStringLengthCorrect(40)) { return; }
+            if (string.IsNullOrEmpty(inputLogin) || !inputLogin.isStringLengthCorrect(40)) 
+            {
+                Console.WriteLine("Nieprawidłowa wpisana wartość. Wcisnij dowolny klawisz by kontynuować");
+                Console.ReadKey();
+                return;
+            }
 
             Console.WriteLine("Podaj hasło");
             string? inputPassword = Console.ReadLine();
-            if (string.IsNullOrEmpty(inputPassword) || !inputPassword.isStringLengthCorrect(40)) { return; }
+            if (string.IsNullOrEmpty(inputPassword) || !inputPassword.isStringLengthCorrect(40))
+            {
+                Console.WriteLine("Nieprawidłowa wpisana wartość. Wcisnij dowolny klawisz by kontynuować");
+                Console.ReadKey();
+                return;
+            }
 
             Console.WriteLine("Podaj Imię");
             string? inputName = Console.ReadLine();
-            if (string.IsNullOrEmpty(inputName) || !inputName.isStringLengthCorrect(40)) { return; }
+            if (string.IsNullOrEmpty(inputName) || !inputName.isStringLengthCorrect(40))
+            {
+                Console.WriteLine("Nieprawidłowa wpisana wartość. Wcisnij dowolny klawisz by kontynuować");
+                Console.ReadKey();
+                return;
+            }
 
             Console.WriteLine("Podaj Nazwisko");
             string? inputSurname = Console.ReadLine();
-            if (string.IsNullOrEmpty(inputSurname) || !inputSurname.isStringLengthCorrect(40)) { return; }
+            if (string.IsNullOrEmpty(inputSurname) || !inputSurname.isStringLengthCorrect(40))
+            {
+                Console.WriteLine("Nieprawidłowa wpisana wartość. Wcisnij dowolny klawisz by kontynuować");
+                Console.ReadKey();
+                return;
+            }
 
             Console.WriteLine("Wpisz 1 jeżeli jesteś uczniem ,2 jeżeli jesteś nauczycielem");
             string? inputStatus = Console.ReadLine();
@@ -38,7 +58,8 @@ namespace JokeManagment.Server
 
             if (!isCityTakenFromDB() || Location.All.Count == 0)
             {
-                Console.WriteLine("Błąd Połączenia lub lista miast pusta");
+                Console.WriteLine("Błąd Połączenia lub lista miast pusta. Wcisnij dowolny klawisz by kontynuować");
+                Console.ReadKey();
                 return;
             }
 
@@ -49,7 +70,8 @@ namespace JokeManagment.Server
             bool isNumber = int.TryParse(inputLocation, out Locationint);
             if (!isNumber) 
             {
-                Console.WriteLine("Nieprawidłowy numer miasta");
+                Console.WriteLine("Nieprawidłowy numer miasta. Wcisnij dowolny klawisz by kontynuować");
+                Console.ReadKey();
                 return; 
             }
             if (!isListContainsInput(Locationint)) 
@@ -75,17 +97,17 @@ namespace JokeManagment.Server
             {
                 try
                 {
-                    RegistrationConnection.Execute("INSERT INTO Users VALUES(DEFAULT, @Login, @Password, @Name, @Surname, @LearningStatus, @LocationId, @LevelOfAccess)", currentUser);
+                    RegistrationConnection.Execute("INSERT INTO Users VALUES(DEFAULT, @Login, @Password, @Name, @Surname, @LearningStatus, @location_id, @LevelOfAccess)", currentUser);
                 }
                 catch
                 {
-                    Console.WriteLine("Nie udało się wysłać formularza. Spróbuj jeszcze raz");
-                    Console.ReadLine();
+                    Console.WriteLine("Nie udało się wysłać formularza. Wciśnij dowolny klawisz by kontynuować");
+                    Console.ReadKey();
                     Console.Clear();
                     return;
                 }
-                Console.WriteLine("Rejestracja powiodła się!");
-                Console.ReadLine();
+                Console.WriteLine("Rejestracja powiodła się. Wciśnij dowolny klawisz by kontynuować");
+                Console.ReadKey();
                 Console.Clear();
                 return;
             }
@@ -97,7 +119,6 @@ namespace JokeManagment.Server
                 try
                 {
                     Location.All = RegistrationConnection.Query<Location>($"SELECT * FROM location").ToList();
-                    //var inputsql = RegistrationConnection.QueryMultiple($"SELECT city FROM Location;");
                 }
                 catch 
                 {
@@ -116,8 +137,8 @@ namespace JokeManagment.Server
                     return true;
                 }
             }
-            Console.WriteLine("Brak miasta w bazie! Spróbuj Ponownie");
-            Console.ReadLine();
+            Console.WriteLine("Brak miasta w bazie. Wciśnij dowolny klawisz by kontynuować.");
+            Console.ReadKey();
             Console.Clear();
             return false;
         }

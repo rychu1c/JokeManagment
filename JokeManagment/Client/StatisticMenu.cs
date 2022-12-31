@@ -20,7 +20,7 @@ namespace JokeManagment.Client
         public void Menu()
         {
             CheckStatisticForCities();
-            Console.ReadLine();
+            Console.ReadKey();
             Console.Clear();
         }
 
@@ -31,7 +31,7 @@ namespace JokeManagment.Client
             List < StatisticCities > CitiesList = GetListFromDB<StatisticCities>(sqlStringCheckCityStatistics);
             if (CitiesList == null || CitiesList.Count ==  0)
             {
-                Console.WriteLine("Błąd listy");
+                Console.WriteLine("Błąd listy. Wciśnij dowolny klawisz by kontynuować.");
                 return;
             }
 
@@ -39,6 +39,7 @@ namespace JokeManagment.Client
             {
                 Console.WriteLine($"{city.city} = {city.readjokecount}");
             }
+            Console.WriteLine("Wciśnij dowolny klawisz by kontynuować.");
         }
 
         private List<T> GetListFromDB<T>(string SQLCommand)
@@ -52,7 +53,7 @@ namespace JokeManagment.Client
                 }
                 catch
                 {
-                    Console.WriteLine("Błąd pobrania listy.");
+                    Console.WriteLine("Błąd pobrania listy. Wciśnij dowolny klawisz by kontynuować.");
                     return list = null;
                 }
             }

@@ -37,7 +37,7 @@ namespace JokeManagment.Client
                 if (!isVaildInput) 
                 {
                     Console.WriteLine("Błędnie wpisana wartość");
-                    Console.ReadLine();
+                    Console.ReadKey();
                     Console.Clear();
                     continue;
                 }
@@ -57,8 +57,8 @@ namespace JokeManagment.Client
                         Environment.Exit(0);
                         return;
                     default:
-                        Console.WriteLine("Wpisana wartość niepoprawna");
-                        Console.ReadLine();
+                        Console.WriteLine("Wpisana wartość niepoprawna. Wciśnij dowolny klawisz by kontynuować.");
+                        Console.ReadKey();
                         break;
                 }
                 Console.Clear();
@@ -92,10 +92,11 @@ namespace JokeManagment.Client
                 if (!isValid || Liststrings.Count < userInputInt || 0 > userInputInt)
                 {
                     Console.WriteLine("Wprowadzono nie poprawną wartość, spróbuj ponownie");
-                    Console.ReadLine();
+                    Console.ReadKey();
                     Console.Clear();
                     continue;
                 }
+                Console.Clear();
 
                 switch (userInputInt)
                 {
