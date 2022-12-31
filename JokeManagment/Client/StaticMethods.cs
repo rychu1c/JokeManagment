@@ -38,7 +38,7 @@ namespace JokeManagment.Client
                 }
                 catch
                 {
-                    Console.WriteLine("Nie udało się wykonac zawołnia Spróbuj jeszcze raz. Naciśnij dowolny klawisz by kontynuować.");
+                    Console.WriteLine("Nie udało się wykonac zawołnia. Naciśnij dowolny klawisz by kontynuować.");
                     Console.ReadLine();
                     Console.Clear();
                     return false;

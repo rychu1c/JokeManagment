@@ -104,10 +104,7 @@ namespace JokeManagment.Client
             DateTime CurrentTime = DateTime.Now;
             BookShelf pickedBook = ListAvailableBooks.ElementAt(userInput - 1);
             string sqlStringTakeBook = $"UPDATE BookShelf SET user_id = {currentUser.user_id} AND borrow_date = {CurrentTime};";
-            if (StaticMethods.isExecutSqlString(sqlStringTakeBook))
-            {
-                return;
-            }
+            StaticMethods.isExecutSqlString(sqlStringTakeBook);
         }
 
         private bool isCountBookTakenCorrect()
@@ -115,7 +112,7 @@ namespace JokeManagment.Client
             string sqlStringCountBooks = $"SELECT COUNT(*) FROM BookShelf WHERE user_id = {currentUser.user_id}";
 
             int? userCountBook = GetCount(sqlStringCountBooks);
-            if (userCountBook == null )
+            if (userCountBook == null)
             {
                 return false;
             }
@@ -136,15 +133,11 @@ namespace JokeManagment.Client
             if (ListAvailableBooks == null)
             {
                 Console.WriteLine("Błąd pobrania danych. Wciśnij dowolny klawisz by kontynuować.");
-                Console.ReadKey();
-                Console.Clear();
                 return;
             }
             if (ListAvailableBooks.Count == 0) 
             {
                 Console.WriteLine("Nie masz żadnych wypożyczonych książek. Wciśnij dowolny klawisz by kontynuować.");
-                Console.ReadKey();
-                Console.Clear();
                 return;
             }
 
@@ -192,12 +185,9 @@ namespace JokeManagment.Client
                 return;
             }
 
-            string sqlStringReturnBook = $"UPDATE BookShelf SET user_id = NULL AND borrow_date = NULL;";
-            if (StaticMethods.isExecutSqlString(sqlStringReturnBook))
-            {
-                return;
-            }
-            Console.WriteLine("Wciśnij dowolny klawisz by kontynuować.");
+            BookShelf PickedBook = ListAvailableBooks.ElementAt(userInput-1);
+            string sqlStringReturnBook = $"UPDATE BookShelf SET user_id = NULL, borrow_date = NULL WHERE book_id = {PickedBook.book_id}";
+            StaticMethods.isExecutSqlString(sqlStringReturnBook); 
         }
 
         private int? GetCount(string SQLCommand)
