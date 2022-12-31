@@ -104,8 +104,6 @@ namespace JokeManagment.Client
             if (ListSubjects == null || ListSubjects.Count == 0) 
             {
                 Console.WriteLine("Błąd pobrania listy uczniów. Wciaśnij dowolny przycisk by kontynuować");
-                Console.ReadKey();
-                Console.Clear();
                 return;
             }
             
@@ -121,8 +119,6 @@ namespace JokeManagment.Client
             if (!isValid) 
             {
                 Console.WriteLine("Wpisana niepoprawna wartość. Wiciśnij dowolny klawisz by kontynuować.");
-                Console.ReadKey();
-                Console.Clear();
                 return;
             }
 
@@ -130,8 +126,6 @@ namespace JokeManagment.Client
             if (pickedsubject == null )
             {
                 Console.WriteLine("Nie udało się pobrać wybranego przedmiotu. Wciśnij dowolny klawisz by kontynuować.");
-                Console.ReadKey();
-                Console.Clear();
                 return;
             }
 
@@ -140,8 +134,6 @@ namespace JokeManagment.Client
             if (teachersList == null || teachersList.Count == 0)
             {
                 Console.WriteLine("Bład pobrania listy uczniów. Wciśnij dowolny klawisz by kontynuować.");
-                Console.ReadKey();
-                Console.Clear();
                 return;
             }
 
@@ -156,12 +148,10 @@ namespace JokeManagment.Client
             if (!isValid3 || userInputInt > teachersList.Count || userInputInt <= 0)
             {
                 Console.WriteLine("Nie wybrano nauczyciela. Wciśnij dowolny klawisz by kontynuować.");
-                Console.ReadKey();
-                Console.Clear();
                 return;
             }
             CurrentUser PickedTeacher = teachersList.ElementAt(userInputInt-1);
-            Console.WriteLine($"Picked teacher is {PickedTeacher.Name} {PickedTeacher.Surname}");
+            Console.WriteLine($"Wybrany nauczyciel to {PickedTeacher.Name} {PickedTeacher.Surname}");
             string Sqlstringinsertstudent = $"INSERT INTO Teachers VALUES ({PickedTeacher.user_id}, {currentUser.user_id}, {pickedsubject.id_subject});";
             using (var RegistrationConnection = ConnectionSQL.EstablishConnection())
             {
@@ -172,13 +162,9 @@ namespace JokeManagment.Client
                 catch
                 {
                     Console.WriteLine("Nie udało się zapisać. Wciśnij dowolny klawisz by kontynuować.");
-                    Console.ReadKey();
-                    Console.Clear();
                     return;
                 }
                 Console.WriteLine("Zapis powiodło się. Wciśnij dowolny klawisz by kontynuować.");
-                Console.ReadKey();
-                Console.Clear();
                 return;
             }
         }
@@ -192,8 +178,6 @@ namespace JokeManagment.Client
             if (StudentTeachers.Count == 0 || StudentTeachers == null)
             {
                 Console.WriteLine("Jeszcze nigdzie nie jesteś zapisany. Wciśnij dowolny klawisz by kontynuować.");
-                Console.ReadKey();
-                Console.Clear();
                 return;
             }
 
@@ -210,6 +194,7 @@ namespace JokeManagment.Client
             List<StudentTeachers> TeachersOfStudent = GetListFromDB<StudentTeachers>(Sqlstringgetyourlesson);
             if (TeachersOfStudent == null || TeachersOfStudent.Count == 0) 
             {
+                Console.WriteLine("Błąd pobrania listy z serwera. Wciśnij dowolny klawisz by kontynuować");
                 return;
             }
 
@@ -225,8 +210,6 @@ namespace JokeManagment.Client
             if (!isValid || userInputInt > TeachersOfStudent.Count || userInputInt <= 0)
             {
                 Console.WriteLine("Błędna wartość. Wciśnij dowolny klawisz by kontynuować.");
-                Console.ReadKey();
-                Console.Clear();
                 return;
             }
             StudentTeachers PickedStudent = TeachersOfStudent.ElementAt(userInputInt-1);
@@ -242,13 +225,9 @@ namespace JokeManagment.Client
                 catch
                 {
                     Console.WriteLine("Nie udało się usunąć. Wciśnij dowolny klawisz by kontynuować.");
-                    Console.ReadKey();
-                    Console.Clear();
                     return;
                 }
                 Console.WriteLine("Usunięcie powiodło się. Wciśnij dowolny klawisz by kontynuować.");
-                Console.ReadKey();
-                Console.Clear();
                 return;
             }
         }
@@ -259,8 +238,7 @@ namespace JokeManagment.Client
             List<SchoolSubjects> schoolSubjects = GetListFromDB<SchoolSubjects>(Sqlstringgetsubjects);
             if (schoolSubjects == null || schoolSubjects.Count == 0)
             {
-                Console.ReadKey();
-                Console.Clear();
+                Console.WriteLine("Błąd pobrania listy przedmiotów z serwera. Wciśnij dowolny klawisz by kontynuować.");
                 return;
             }
 
@@ -275,8 +253,6 @@ namespace JokeManagment.Client
             if (!isVaild || userInputInt > schoolSubjects.Count() || userInputInt <= 0)
             {
                 Console.WriteLine("Wpisana wartość jest nie poprawna. Wciśnij dowolny klawisz by kontynuować.");
-                Console.ReadKey();
-                Console.Clear();
                 return;
             }
             Console.WriteLine("Wciśnij dowolny klawisz by kontynuować");
@@ -293,13 +269,9 @@ namespace JokeManagment.Client
                 catch
                 {
                     Console.WriteLine("Dodanie przedmiotu nie powioło się. Wciśnij dowolny klawisz by kontynuować.");
-                    Console.ReadKey();
-                    Console.Clear();
                     return;
                 }
                 Console.WriteLine("Dodanie przedmiotu powiodło się. Wciśnij dowolny klawisz by kontynuować.");
-                Console.ReadKey();
-                Console.Clear();
                 return;
             }
         }
@@ -321,7 +293,6 @@ namespace JokeManagment.Client
                 }
                 catch
                 {
-                    Console.WriteLine("Błąd pobrania listy.");
                     return list = null;
                 }
             }
