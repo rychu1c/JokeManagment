@@ -92,7 +92,7 @@ namespace JokeManagment.Client
                 bool isValid = int.TryParse(Console.ReadLine(), out int userInputInt);
                 if (!isValid || Liststrings.Count < userInputInt || 0 > userInputInt)
                 {
-                    Console.WriteLine("Wprowadzono nie poprawną wartość, spróbuj ponownie");
+                    Console.WriteLine("Wprowadzono nie poprawną wartość, Wciśnij dowolny klawisz by kontynuować.");
                     Console.ReadKey();
                     Console.Clear();
                     continue;
