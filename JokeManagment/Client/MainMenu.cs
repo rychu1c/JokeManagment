@@ -36,11 +36,12 @@ namespace JokeManagment.Client
                 bool isVaildInput = int.TryParse(Console.ReadLine(),out int inputNumber);
                 if (!isVaildInput) 
                 {
-                    Console.WriteLine("Błędnie wpisana wartość");
+                    Console.WriteLine("Błędnie wpisana wartość. Wciśnij dowolny klawisz by kontynuować.");
                     Console.ReadKey();
                     Console.Clear();
                     continue;
                 }
+                Console.Clear();
 
                 switch (inputNumber)
                 {
