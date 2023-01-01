@@ -1,6 +1,4 @@
-﻿using JokeManagment.Server;
-
-namespace JokeManagment.Client
+﻿namespace JokeManagment.Client
 {
     public class Program
     {

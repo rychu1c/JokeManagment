@@ -1,10 +1,5 @@
 ﻿using Dapper;
 using JokeManagment.Server;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JokeManagment.Client
 {
@@ -28,8 +23,8 @@ namespace JokeManagment.Client
         {
             string sqlStringCheckCityStatistics = $"SELECT Location.location_id, JokeLocationStatistic.readjokecount,  Location.City FROM JokeLocationStatistic FULL JOIN Location ON Location.location_id = JokeLocationStatistic.location_id ORDER BY Location.location_id ";
 
-            List < StatisticCities > CitiesList = GetListFromDB<StatisticCities>(sqlStringCheckCityStatistics);
-            if (CitiesList == null || CitiesList.Count ==  0)
+            List<StatisticCities> CitiesList = GetListFromDB<StatisticCities>(sqlStringCheckCityStatistics);
+            if (CitiesList == null || CitiesList.Count == 0)
             {
                 Console.WriteLine("Błąd listy. Wciśnij dowolny klawisz by kontynuować.");
                 return;

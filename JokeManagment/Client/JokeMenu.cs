@@ -1,12 +1,5 @@
 ﻿using Dapper;
 using JokeManagment.Server;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JokeManagment.Client
 {
@@ -14,7 +7,7 @@ namespace JokeManagment.Client
     {
         CurrentUser currentUser { get; set; }
 
-        public JokeMenu(CurrentUser _currentUser) 
+        public JokeMenu(CurrentUser _currentUser)
         {
             currentUser = _currentUser;
         }
@@ -24,7 +17,7 @@ namespace JokeManagment.Client
             bool isUserQuittedMenu = false;
             while (!isUserQuittedMenu)
             {
-                List<string> ListString= new List<string>();
+                List<string> ListString = new List<string>();
                 ListString.Add("1.Przeczytaj żart");
                 ListString.Add("2.Losuj żart do przeczytania");
                 ListString.Add("3.Dodaj nowy żart");
@@ -70,7 +63,7 @@ namespace JokeManagment.Client
                 }
                 Console.Clear();
             }
-            
+
         }
         private void ReadJoke()
         {
@@ -84,7 +77,7 @@ namespace JokeManagment.Client
             }
 
             Console.WriteLine("Wpisz jaką kategorie żartu chcesz przeczytać");
-            foreach (JokeType joke in jokeTypes) 
+            foreach (JokeType joke in jokeTypes)
             {
                 Console.WriteLine($"{joke.category_joke_id}. {joke.joke_category}");
             }
@@ -96,7 +89,7 @@ namespace JokeManagment.Client
                 Console.ReadKey();
                 return;
             }
-            
+
             //Based on user choice pick specific type of joke 
             JokeType jokeTypeChosen = jokeTypes.FirstOrDefault(type => type.category_joke_id == inputId);
             if (jokeTypeChosen == null)
@@ -130,7 +123,7 @@ namespace JokeManagment.Client
                 return;
             }
 
-            JokeBase JokeChosen = JokeList.FirstOrDefault(jokes =>  jokes.Joke_id == inputId2);
+            JokeBase JokeChosen = JokeList.FirstOrDefault(jokes => jokes.Joke_id == inputId2);
             if (JokeChosen == null)
             {
                 Console.WriteLine("Nie znaleziono żartu. Wciśnij dowolny klawisz by kontynuować.");
@@ -153,7 +146,7 @@ namespace JokeManagment.Client
             }
 
             var random = new Random();
-            int indexOfRandomJoke = random.Next(0,listjokeid.Count);
+            int indexOfRandomJoke = random.Next(0, listjokeid.Count);
             int idOfRandomJoke = listjokeid.ElementAt(indexOfRandomJoke);
 
             string jokemessage;
@@ -174,7 +167,7 @@ namespace JokeManagment.Client
             CountJoke();
         }
 
-        private void AddJoke() 
+        private void AddJoke()
         {
             string Sqlstringaddjoke = $"INSERT INTO JokeBase VALUES(DEFAULT, )";
 
@@ -192,12 +185,12 @@ namespace JokeManagment.Client
                 Console.WriteLine($"{joke.category_joke_id}. {joke.joke_category}");
             }
 
-            bool isVaild = int.TryParse(Console.ReadLine(),out int inputId);
-            if (!isVaild ) 
+            bool isVaild = int.TryParse(Console.ReadLine(), out int inputId);
+            if (!isVaild)
             {
                 Console.WriteLine("Niepoprawna wartośc. Wciśnij dowolny kalwisz by kontynuować.");
                 Console.ReadKey();
-                return; 
+                return;
             }
 
             JokeType jokeTypeChosen = jokeTypes.FirstOrDefault(type => type.category_joke_id == inputId);
@@ -209,8 +202,8 @@ namespace JokeManagment.Client
             }
 
             Console.WriteLine("Wpisz traść żartu.");
-            string inputJokeMessage  = Console.ReadLine();
-            if(!inputJokeMessage.isStringLengthCorrect(5000) || string.IsNullOrEmpty(inputJokeMessage)) { return; }
+            string inputJokeMessage = Console.ReadLine();
+            if (!inputJokeMessage.isStringLengthCorrect(5000) || string.IsNullOrEmpty(inputJokeMessage)) { return; }
 
             using (var AddJokeConnection = ConnectionSQL.EstablishConnection())
             {

@@ -1,13 +1,4 @@
-﻿using JokeManagment.Client;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Dapper;
-using System.Collections;
+﻿using Dapper;
 
 namespace JokeManagment.Server
 {
@@ -23,7 +14,7 @@ namespace JokeManagment.Server
             Console.WriteLine("Podaj swoje hasło");
             string? inputPassword = Console.ReadLine();
 
-            if (string.IsNullOrEmpty(inputLogin) || string.IsNullOrEmpty(inputPassword)) 
+            if (string.IsNullOrEmpty(inputLogin) || string.IsNullOrEmpty(inputPassword))
             {
                 Console.WriteLine("Wpisana wartość nie prawidłowa. Wcisnij dowolny klawisz by kontynuować.");
                 Console.ReadKey();
@@ -33,14 +24,14 @@ namespace JokeManagment.Server
 
             return currentUser = GetUserDB(currentUser, inputLogin, inputPassword);
         }
-        private CurrentUser GetUserDB(CurrentUser user,string Login,string password)
+        private CurrentUser GetUserDB(CurrentUser user, string Login, string password)
         {
             using (var loginConnection = ConnectionSQL.EstablishConnection())
             {
                 try
                 {
                     user = loginConnection.QuerySingleOrDefault<CurrentUser>($"SELECT * FROM users WHERE login = '{Login}' AND password = '{password}'");//Stored Procedure
-                    
+
                 }
                 catch
                 {

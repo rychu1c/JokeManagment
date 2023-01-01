@@ -1,10 +1,5 @@
 ﻿using Dapper;
 using JokeManagment.Server;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JokeManagment.Client
 {
@@ -68,7 +63,7 @@ namespace JokeManagment.Client
         private void AddAdministrator()
         {
             string SqlStrigGetListOfUsers = $"SELECT * FROM Users WHERE levelofaccess = 0";
-            List < CurrentUser > ListUsers = GetListFromDB<CurrentUser>(SqlStrigGetListOfUsers);
+            List<CurrentUser> ListUsers = GetListFromDB<CurrentUser>(SqlStrigGetListOfUsers);
             if (ListUsers == null || ListUsers.Count == 0)
             {
                 Console.WriteLine("Lista użytkowników jest pusta. Wciśnij dowolny klawisz by kontynuować");
@@ -78,7 +73,7 @@ namespace JokeManagment.Client
             Console.WriteLine("Lista użytkowników");
             foreach (CurrentUser User in ListUsers)
             {
-                Console.WriteLine($"{ListUsers.IndexOf(User) +1}. {User.Name} {User.Surname}");
+                Console.WriteLine($"{ListUsers.IndexOf(User) + 1}. {User.Name} {User.Surname}");
             }
 
             bool isValid = int.TryParse(Console.ReadLine(), out int userInputInt);

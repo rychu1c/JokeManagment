@@ -1,10 +1,6 @@
 ﻿using Dapper;
 using JokeManagment.Server;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 
 namespace JokeManagment.Client
 {
@@ -59,11 +55,11 @@ namespace JokeManagment.Client
                         ReturnBook();
                         break;
                     default:
-                        Console.WriteLine("Błąd");
+                        Console.WriteLine("Błąd wpisanej wartości , wciśnij dowolny przycisk by kontynuować.");
                         isUserInMenu = false;
                         return;
                 }
-                Console.ReadLine();
+                Console.ReadKey();
                 Console.Clear();
             }
         }
@@ -76,9 +72,9 @@ namespace JokeManagment.Client
                 return;
             }
 
-            string sqlStingCheckBooks = $"SELECT * FROM BookShelf WHERE user_id = NULL";
-            List<BookShelf> ListAvailableBooks = StaticMethods.GetListFormDB<BookShelf>(sqlStingCheckBooks);
-            if (ListAvailableBooks == null) 
+            string sqlStingCheckBooks = $"SELECT * FROM BookShelf WHERE user_id IS NULL";
+            List<BookShelf>? ListAvailableBooks = StaticMethods.GetListFormDB<BookShelf>(sqlStingCheckBooks);
+            if (ListAvailableBooks == null)
             {
                 Console.WriteLine("Błąd pobrania pobrania danych");
                 return;
@@ -91,7 +87,7 @@ namespace JokeManagment.Client
 
             foreach (BookShelf book in ListAvailableBooks)
             {
-                Console.WriteLine($"{ListAvailableBooks.IndexOf(book)+1}. {book.bookname}");
+                Console.WriteLine($"{ListAvailableBooks.IndexOf(book) + 1}. {book.bookname}");
             }
 
             bool isValid = int.TryParse(Console.ReadLine(), out int userInput);
@@ -101,9 +97,10 @@ namespace JokeManagment.Client
                 return;
             }
 
-            DateTime CurrentTime = DateTime.Now;
+            string currentTime = DateTime.Now.ToString("yyyy-MM-dd");
             BookShelf pickedBook = ListAvailableBooks.ElementAt(userInput - 1);
-            string sqlStringTakeBook = $"UPDATE BookShelf SET user_id = {currentUser.user_id} AND borrow_date = {CurrentTime};";
+
+            string sqlStringTakeBook = $"UPDATE BookShelf SET user_id = {currentUser.user_id}, borrow_date = '{currentTime}' WHERE book_id = {pickedBook.book_id};";
             StaticMethods.isExecutSqlString(sqlStringTakeBook);
         }
 
@@ -129,13 +126,13 @@ namespace JokeManagment.Client
         private void CalculatePayment()
         {
             string sqlStingCheckYourBooks = $"SELECT * FROM BookShelf WHERE user_id = {currentUser.user_id}";
-            List<BookShelf> ListAvailableBooks = StaticMethods.GetListFormDB<BookShelf>(sqlStingCheckYourBooks);
+            List<BookShelf>? ListAvailableBooks = StaticMethods.GetListFormDB<BookShelf>(sqlStingCheckYourBooks);
             if (ListAvailableBooks == null)
             {
                 Console.WriteLine("Błąd pobrania danych. Wciśnij dowolny klawisz by kontynuować.");
                 return;
             }
-            if (ListAvailableBooks.Count == 0) 
+            if (ListAvailableBooks.Count == 0)
             {
                 Console.WriteLine("Nie masz żadnych wypożyczonych książek. Wciśnij dowolny klawisz by kontynuować.");
                 return;
@@ -160,8 +157,8 @@ namespace JokeManagment.Client
         private void ReturnBook()
         {
             string sqlStingCheckYourBooks = $"SELECT * FROM BookShelf WHERE user_id = {currentUser.user_id}";
-            List<BookShelf> ListAvailableBooks = StaticMethods.GetListFormDB<BookShelf>(sqlStingCheckYourBooks);
-            if (ListAvailableBooks == null) 
+            List<BookShelf>? ListAvailableBooks = StaticMethods.GetListFormDB<BookShelf>(sqlStingCheckYourBooks);
+            if (ListAvailableBooks == null)
             {
                 Console.WriteLine("Błąd serwera. Wciśnij dowolny klawisz by kontynuować.");
                 return;
@@ -185,9 +182,9 @@ namespace JokeManagment.Client
                 return;
             }
 
-            BookShelf PickedBook = ListAvailableBooks.ElementAt(userInput-1);
+            BookShelf PickedBook = ListAvailableBooks.ElementAt(userInput - 1);
             string sqlStringReturnBook = $"UPDATE BookShelf SET user_id = NULL, borrow_date = NULL WHERE book_id = {PickedBook.book_id}";
-            StaticMethods.isExecutSqlString(sqlStringReturnBook); 
+            StaticMethods.isExecutSqlString(sqlStringReturnBook);
         }
 
         private int? GetCount(string SQLCommand)

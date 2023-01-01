@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using JokeManagment.Client;
 using static JokeManagment.Server.CurrentUser;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace JokeManagment.Server
 {
@@ -15,7 +14,7 @@ namespace JokeManagment.Server
             //if its free write user to DB and return true
             Console.WriteLine("Podaj login nowego użytkownika");
             string? inputLogin = Console.ReadLine();
-            if (string.IsNullOrEmpty(inputLogin) || !inputLogin.isStringLengthCorrect(40)) 
+            if (string.IsNullOrEmpty(inputLogin) || !inputLogin.isStringLengthCorrect(40))
             {
                 Console.WriteLine("Nieprawidłowa wpisana wartość. Wcisnij dowolny klawisz by kontynuować");
                 Console.ReadKey();
@@ -68,15 +67,15 @@ namespace JokeManagment.Server
             string? inputLocation = Console.ReadLine();
             int Locationint;
             bool isNumber = int.TryParse(inputLocation, out Locationint);
-            if (!isNumber) 
+            if (!isNumber)
             {
                 Console.WriteLine("Nieprawidłowy numer miasta. Wcisnij dowolny klawisz by kontynuować");
                 Console.ReadKey();
-                return; 
+                return;
             }
-            if (!isListContainsInput(Locationint)) 
+            if (!isListContainsInput(Locationint))
             {
-                return; 
+                return;
             }
 
             CurrentUser User = new CurrentUser(inputLogin, inputPassword, inputName, inputSurname, StatusConverted, Locationint);
@@ -120,7 +119,7 @@ namespace JokeManagment.Server
                 {
                     Location.All = RegistrationConnection.Query<Location>($"SELECT * FROM location").ToList();
                 }
-                catch 
+                catch
                 {
                     Location.All.Clear();
                     return false;
@@ -128,7 +127,7 @@ namespace JokeManagment.Server
                 return true;
             }
         }
-        private bool isListContainsInput(int input) 
+        private bool isListContainsInput(int input)
         {
             foreach (var list in Location.All)
             {
