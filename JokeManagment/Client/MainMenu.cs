@@ -26,7 +26,7 @@ namespace JokeManagment.Client
             bool IsCurrentUserNull = true;
             while (IsCurrentUserNull)
             {
-                List<string> ListOptions= new List<string>();
+                List<string> ListOptions = new List<string>();
                 ListOptions.Add("1.Zaloguj się");
                 ListOptions.Add("2.Zarejestruj się");
                 ListOptions.Add("0.Wyjdz z aplikacji");
